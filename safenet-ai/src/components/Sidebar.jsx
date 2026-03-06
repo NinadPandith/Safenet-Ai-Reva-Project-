@@ -10,26 +10,46 @@ import {
     Activity,
     TrendingUp,
     Settings,
-    ShieldCheck
+    ShieldCheck,
+    Search,
+    Database,
+    MessageSquareWarning,
+    FileSearch,
+    KeyRound,
+    Footprints,
+    Presentation,
+    Target,
+    DownloadCloud,
+    BookOpen
 } from 'lucide-react';
 
-const Sidebar = ({ isOpen }) => {
+const Sidebar = ({ isOpen, onOpenSettings }) => {
     const menuItems = [
         { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
+        { icon: Target, label: 'Security Score', path: '/tool/score' },
         { icon: MailWarning, label: 'Phishing Detector', path: '/tool/phishing' },
+        { icon: Search, label: 'Domain Impersonation', path: '/tool/domain' },
         { icon: Globe, label: 'URL Scanner', path: '/tool/url' },
+        { icon: DownloadCloud, label: 'Safe Download', path: '/tool/download' },
         { icon: Key, label: 'Password Analyzer', path: '/tool/password' },
+        { icon: KeyRound, label: 'Password Breach', path: '/tool/pw-breach' },
+        { icon: Database, label: 'Data Breach Check', path: '/tool/breach' },
         { icon: Smartphone, label: 'App Permissions', path: '/tool/permissions' },
-        { icon: Activity, label: 'Cyber Risk Score', path: '/tool/risk' },
+        { icon: FileSearch, label: 'Malware Risk Scan', path: '/tool/file' },
+        { icon: MessageSquareWarning, label: 'Social Engineering', path: '/tool/social' },
+        { icon: Activity, label: 'Cyber Risk Quiz', path: '/tool/risk' },
+        { icon: BookOpen, label: 'Knowledge Quiz', path: '/tool/quiz' },
+        { icon: Footprints, label: 'Digital Footprint', path: '/tool/footprint' },
         { icon: TrendingUp, label: 'Threat Intelligence', path: '/tool/intel' },
+        { icon: Presentation, label: 'Attack Simulator', path: '/tool/simulator' },
         { icon: MessageSquare, label: 'AI Assistant', path: '/tool/chat' },
     ];
 
     return (
-        <aside className={`fixed left-0 top-16 bottom-0 w-[260px] bg-slate-900 border-r border-slate-700 transition-transform duration-300 ease-in-out z-40 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-            <div className="flex flex-col h-full py-6">
-                <div className="px-6 mb-4">
-                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Navigation</p>
+        <aside className={`fixed left-0 top-16 bottom-0 w-[260px] glass-sidebar border-r border-white/10 transition-transform duration-300 ease-in-out z-40 overflow-y-auto scrollbar-hide ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+            <div className="flex flex-col h-full py-6 min-h-max">
+                <div className="px-6 mb-4 shrink-0">
+                    <p className="text-xs font-semibold text-white/50 uppercase tracking-wider">Navigation</p>
                 </div>
 
                 <nav className="flex-1 space-y-1 px-3">
@@ -40,8 +60,8 @@ const Sidebar = ({ isOpen }) => {
                             className={({ isActive }) => `
                                 flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200
                                 ${isActive
-                                    ? 'bg-blue-600/10 text-blue-500 relative before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-2/3 before:w-1 before:bg-blue-500 before:rounded-r-md'
-                                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'}
+                                    ? 'glass-sidebar-active relative before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-2/3 before:w-1 before:bg-white before:rounded-r-md'
+                                    : 'text-white/70 hover:text-white hover:bg-[#1E293B]'}
                             `}
                         >
                             <item.icon size={18} className="flex-shrink-0" />
@@ -51,24 +71,27 @@ const Sidebar = ({ isOpen }) => {
                 </nav>
 
                 <div className="px-4 mt-auto">
-                    <div className="p-4 rounded-xl bg-slate-800 border border-slate-700">
+                    <div className="p-4 rounded-xl bg-[#1E293B] border border-[#334155]">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="p-1.5 bg-blue-500/10 text-blue-500 rounded-md">
+                            <div className="p-1.5 bg-blue-500/10 text-[#2563EB] rounded-md">
                                 <ShieldCheck size={16} />
                             </div>
-                            <span className="text-sm font-semibold text-slate-200">System Status</span>
+                            <span className="text-sm font-semibold text-white">System Status</span>
                         </div>
                         <div className="flex items-center justify-between mt-3">
-                            <span className="text-xs text-slate-400 font-medium">Uptime</span>
-                            <span className="text-xs text-emerald-400 font-medium">99.9%</span>
+                            <span className="text-xs text-white/70 font-medium">Uptime</span>
+                            <span className="text-xs text-[#22C55E] font-medium">99.9%</span>
                         </div>
-                        <div className="w-full bg-slate-700 h-1.5 rounded-full mt-2 overflow-hidden">
-                            <div className="bg-emerald-500 h-full w-[99.9%]"></div>
+                        <div className="w-full bg-[#334155] h-1.5 rounded-full mt-2 overflow-hidden">
+                            <div className="bg-[#22C55E] h-full w-[99.9%]"></div>
                         </div>
                     </div>
 
                     <div className="mt-4">
-                        <button className="flex items-center gap-3 px-3 py-2 w-full text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg transition-colors font-medium text-sm">
+                        <button
+                            onClick={onOpenSettings}
+                            className="flex items-center gap-3 px-3 py-2 w-full text-white/70 hover:text-white hover:bg-[#1E293B] rounded-lg transition-colors font-medium text-sm"
+                        >
                             <Settings size={18} />
                             <span>Settings</span>
                         </button>

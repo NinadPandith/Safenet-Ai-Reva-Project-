@@ -11,52 +11,105 @@ import PasswordAnalyzer from './tools/PasswordAnalyzer';
 import AIChatbot from './tools/AIChatbot';
 import RiskScoreQuiz from './tools/RiskScoreQuiz';
 import ThreatIntelligence from './tools/ThreatIntelligence';
+import DomainImpersonation from './tools/DomainImpersonation';
+import DataBreachChecker from './tools/DataBreachChecker';
+import SocialEngineeringDetector from './tools/SocialEngineeringDetector';
+import FileScanner from './tools/FileScanner';
+import PasswordBreachDetector from './tools/PasswordBreachDetector';
+import DigitalFootprint from './tools/DigitalFootprint';
+import AttackSimulator from './tools/AttackSimulator';
+import SecurityScore from './tools/SecurityScore';
+import SafeDownload from './tools/SafeDownload';
+import KnowledgeQuiz from './tools/KnowledgeQuiz';
 import FloatingAssistant from './components/FloatingAssistant';
+import ProfileModal from './components/ProfileModal';
+import SettingsModal from './components/SettingsModal';
+import SecurityPreferencesModal from './components/SecurityPreferencesModal';
+import APIKeysModal from './components/APIKeysModal';
+import SignOutModal from './components/SignOutModal';
+import { ToastProvider } from './contexts/ToastContext';
+import { SettingsProvider } from './contexts/SettingsContext';
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
+  const [isAPIKeysModalOpen, setIsAPIKeysModalOpen] = useState(false);
+  const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
 
   return (
-    <Router>
-      <div className="min-h-screen bg-slate-900 text-slate-200 font-sans selection:bg-blue-500/30">
-        <Routes>
-          {/* Landing Page Route */}
-          <Route path="/" element={<LandingPage />} />
+    <ToastProvider>
+      <SettingsProvider>
+        <Router>
+          <div className="min-h-screen bg-transparent text-white font-sans selection:bg-blue-500/30">
+            <Routes>
+              {/* Landing Page Route */}
+              <Route path="/" element={<LandingPage />} />
 
-          {/* Dashboard and Tools Routes */}
-          <Route
-            path="/*"
-            element={
-              <div className="flex bg-slate-900">
-                <Navbar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
-                <Sidebar isOpen={isSidebarOpen} />
-                <main className="flex-1 lg:ml-[260px] pt-16 min-h-screen transition-all bg-slate-900">
-                  <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8 w-full">
-                    <Routes>
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/tool/phishing" element={<PhishingDetector />} />
-                      <Route path="/tool/url" element={<URLScanner />} />
-                      <Route path="/tool/permissions" element={<PermissionAnalyzer />} />
-                      <Route path="/tool/password" element={<PasswordAnalyzer />} />
-                      <Route path="/tool/chat" element={<AIChatbot />} />
-                      <Route path="/tool/risk" element={<RiskScoreQuiz />} />
-                      <Route path="/tool/intel" element={<ThreatIntelligence />} />
-                      <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                    </Routes>
+              {/* Dashboard and Tools Routes */}
+              <Route
+                path="/*"
+                element={
+                  <div className="flex bg-transparent">
+                    <Navbar
+                      onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                      onOpenProfile={() => setIsProfileModalOpen(true)}
+                      onOpenSettings={() => setIsSettingsModalOpen(true)}
+                      onOpenSecurity={() => setIsSecurityModalOpen(true)}
+                      onOpenAPIKeys={() => setIsAPIKeysModalOpen(true)}
+                      onOpenSignOut={() => setIsSignOutModalOpen(true)}
+                    />
+                    <Sidebar
+                      isOpen={isSidebarOpen}
+                      onOpenSettings={() => setIsSettingsModalOpen(true)}
+                    />
+                    <main className="flex-1 lg:ml-[260px] pt-16 min-h-screen transition-all bg-transparent">
+                      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8 w-full">
+                        <Routes>
+                          <Route path="/dashboard" element={<Dashboard />} />
+                          <Route path="/tool/phishing" element={<PhishingDetector />} />
+                          <Route path="/tool/url" element={<URLScanner />} />
+                          <Route path="/tool/permissions" element={<PermissionAnalyzer />} />
+                          <Route path="/tool/password" element={<PasswordAnalyzer />} />
+                          <Route path="/tool/chat" element={<AIChatbot />} />
+                          <Route path="/tool/risk" element={<RiskScoreQuiz />} />
+                          <Route path="/tool/intel" element={<ThreatIntelligence />} />
+                          <Route path="/tool/domain" element={<DomainImpersonation />} />
+                          <Route path="/tool/breach" element={<DataBreachChecker />} />
+                          <Route path="/tool/social" element={<SocialEngineeringDetector />} />
+                          <Route path="/tool/file" element={<FileScanner />} />
+                          <Route path="/tool/pw-breach" element={<PasswordBreachDetector />} />
+                          <Route path="/tool/footprint" element={<DigitalFootprint />} />
+                          <Route path="/tool/simulator" element={<AttackSimulator />} />
+                          <Route path="/tool/score" element={<SecurityScore />} />
+                          <Route path="/tool/download" element={<SafeDownload />} />
+                          <Route path="/tool/quiz" element={<KnowledgeQuiz />} />
+                          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                        </Routes>
+                      </div>
+
+                      <FloatingAssistant />
+
+                      <footer className="p-8 text-center border-t border-slate-800 bg-transparent">
+                        <p className="text-xs text-white/50 font-medium">SafeNet-AI — Enterprise Cybersecurity Platform © 2026</p>
+                      </footer>
+
+                      {/* Modals */}
+                      <ProfileModal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} />
+                      <SettingsModal isOpen={isSettingsModalOpen} onClose={() => setIsSettingsModalOpen(false)} />
+                      <SecurityPreferencesModal isOpen={isSecurityModalOpen} onClose={() => setIsSecurityModalOpen(false)} />
+                      <APIKeysModal isOpen={isAPIKeysModalOpen} onClose={() => setIsAPIKeysModalOpen(false)} />
+                      <SignOutModal isOpen={isSignOutModalOpen} onClose={() => setIsSignOutModalOpen(false)} />
+                    </main>
                   </div>
-
-                  <FloatingAssistant />
-
-                  <footer className="p-8 text-center border-t border-slate-800 bg-slate-900">
-                    <p className="text-xs text-slate-500 font-medium">SafeNet-AI — Enterprise Cybersecurity Platform © 2026</p>
-                  </footer>
-                </main>
-              </div>
-            }
-          />
-        </Routes>
-      </div>
-    </Router>
+                }
+              />
+            </Routes>
+          </div>
+        </Router>
+      </SettingsProvider>
+    </ToastProvider>
   );
 }
 

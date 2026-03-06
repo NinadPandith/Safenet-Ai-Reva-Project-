@@ -87,29 +87,29 @@ const PasswordAnalyzer = () => {
     };
 
     const getStrengthColor = () => {
-        if (strength < 40) return 'text-red-500 bg-red-500/10 border-red-500/20';
-        if (strength < 70) return 'text-amber-500 bg-amber-500/10 border-amber-500/20';
-        return 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20';
+        if (strength < 40) return 'text-[#EF4444] bg-[#EF4444]/10 border-red-500/20';
+        if (strength < 70) return 'text-[#F59E0B] bg-[#F59E0B]/10 border-amber-500/20';
+        return 'text-[#22C55E] bg-[#22C55E]/10 border-green-500/20';
     };
 
     const getStrengthCircleColor = () => {
-        if (strength < 40) return 'text-red-500';
-        if (strength < 70) return 'text-amber-500';
-        return 'text-emerald-500';
+        if (strength < 40) return 'text-[#EF4444]';
+        if (strength < 70) return 'text-[#F59E0B]';
+        return 'text-[#22C55E]';
     };
 
     return (
         <div className="space-y-6">
             {/* Header Section */}
-            <header className="bg-slate-900 border border-slate-700 rounded-2xl p-8 flex items-center gap-6 shadow-sm">
+            <header className="bg-transparent border border-[#334155] rounded-2xl p-8 flex items-center gap-6 shadow-sm">
                 <div className="p-4 bg-blue-500/10 rounded-xl">
-                    <Key className="text-blue-500" size={32} />
+                    <Key className="text-[#2563EB]" size={32} />
                 </div>
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-200 tracking-tight">
+                    <h1 className="text-2xl font-bold text-white tracking-tight">
                         Password Analyzer
                     </h1>
-                    <p className="text-slate-400 text-sm mt-1">
+                    <p className="text-white/70 text-sm mt-1">
                         Evaluate password strength, calculate entropy, and estimate brute-force resistance time.
                     </p>
                 </div>
@@ -120,11 +120,11 @@ const PasswordAnalyzer = () => {
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="lg:col-span-2 bg-slate-900 border border-slate-700 rounded-xl p-8 shadow-sm flex flex-col justify-center"
+                    className="lg:col-span-2 bg-transparent border border-[#334155] rounded-xl p-8 shadow-sm flex flex-col justify-center"
                 >
                     <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-lg font-bold text-slate-200 flex items-center gap-2">
-                            <Lock size={18} className="text-slate-400" /> Evaluate Password
+                        <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                            <Lock size={18} className="text-white/70" /> Evaluate Password
                         </h2>
                     </div>
 
@@ -134,22 +134,22 @@ const PasswordAnalyzer = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="Enter password to analyze..."
-                            className="w-full bg-slate-800 border border-slate-700 rounded-lg py-4 px-6 pr-16 text-lg font-medium text-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-500"
+                            className="w-full bg-[#1E293B] border border-[#334155] rounded-lg py-4 px-6 pr-16 text-lg font-medium text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-[#2563EB] transition-all placeholder:text-white/50"
                         />
                         <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-4">
                             <button
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="text-slate-400 hover:text-slate-200 transition-colors"
+                                className="text-white/70 hover:text-white transition-colors"
                             >
                                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                             </button>
                             {isAnalyzing && (
-                                <Cpu size={18} className="text-blue-500 animate-spin" />
+                                <Cpu size={18} className="text-[#2563EB] animate-spin" />
                             )}
                         </div>
                     </div>
 
-                    <div className="mt-6 flex items-center text-slate-500 text-xs font-semibold uppercase tracking-wider">
+                    <div className="mt-6 flex items-center text-white/50 text-xs font-semibold uppercase tracking-wider">
                         <Shield size={14} className="mr-2" /> All processing happens locally in your browser.
                     </div>
                 </motion.div>
@@ -159,9 +159,9 @@ const PasswordAnalyzer = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="bg-slate-900 border border-slate-700 rounded-xl p-8 shadow-sm flex flex-col items-center justify-center text-center relative"
+                    className="bg-transparent border border-[#334155] rounded-xl p-8 shadow-sm flex flex-col items-center justify-center text-center relative"
                 >
-                    <h3 className="text-sm font-bold text-slate-300 mb-6 w-full text-left">Overall Strength</h3>
+                    <h3 className="text-sm font-bold text-white mb-6 w-full text-left">Overall Strength</h3>
 
                     <div className="relative w-36 h-36 mb-6">
                         <svg className="w-full h-full transform -rotate-90">
@@ -186,7 +186,7 @@ const PasswordAnalyzer = () => {
                             />
                         </svg>
                         <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <span className={`text-3xl font-bold leading-none ${strength === 0 ? 'text-slate-600' : 'text-slate-200'}`}>
+                            <span className={`text-3xl font-bold leading-none ${strength === 0 ? 'text-slate-600' : 'text-white'}`}>
                                 {strength}%
                             </span>
                         </div>
@@ -202,33 +202,33 @@ const PasswordAnalyzer = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="lg:col-span-2 bg-slate-900 border border-slate-700 rounded-xl p-8 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-8"
+                    className="lg:col-span-2 bg-transparent border border-[#334155] rounded-xl p-8 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-8"
                 >
                     <div className="space-y-4">
-                        <div className="flex items-center gap-2 text-slate-200 mb-2">
-                            <Activity size={18} className="text-blue-500" />
+                        <div className="flex items-center gap-2 text-white mb-2">
+                            <Activity size={18} className="text-[#2563EB]" />
                             <h4 className="font-bold">Calculated Entropy</h4>
                         </div>
                         <div className="flex items-end gap-2">
-                            <span className={`text-4xl font-bold leading-none ${entropy > 0 ? 'text-slate-200' : 'text-slate-600'}`}>{entropy}</span>
-                            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest pb-1">Bits</span>
+                            <span className={`text-4xl font-bold leading-none ${entropy > 0 ? 'text-white' : 'text-slate-600'}`}>{entropy}</span>
+                            <span className="text-xs font-bold text-white/70 uppercase tracking-widest pb-1">Bits</span>
                         </div>
-                        <p className="text-sm text-slate-400 leading-relaxed max-w-sm mt-4">
+                        <p className="text-sm text-white/70 leading-relaxed max-w-sm mt-4">
                             Entropy measures password unpredictability. Higher bit-entropy values exponentially increase the difficulty of guessing.
                         </p>
                     </div>
 
                     <div className="space-y-4 md:border-l md:border-slate-800 md:pl-8">
-                        <div className="flex items-center gap-2 text-slate-200 mb-2">
-                            <Zap size={18} className="text-blue-500" />
+                        <div className="flex items-center gap-2 text-white mb-2">
+                            <Zap size={18} className="text-[#2563EB]" />
                             <h4 className="font-bold">Estimated Crack Time</h4>
                         </div>
                         <div className="flex items-end gap-2 min-h-[40px]">
-                            <span className={`text-2xl font-bold text-slate-200 leading-tight ${crackTime === 'N/A' ? 'text-slate-600' : 'text-slate-200'}`}>
+                            <span className={`text-2xl font-bold text-white leading-tight ${crackTime === 'N/A' ? 'text-slate-600' : 'text-white'}`}>
                                 {crackTime}
                             </span>
                         </div>
-                        <p className="text-sm text-slate-400 leading-relaxed max-w-sm mt-4">
+                        <p className="text-sm text-white/70 leading-relaxed max-w-sm mt-4">
                             Estimated time to crack using a fast offline cluster computing at 1 billion guesses per second.
                         </p>
                     </div>
@@ -239,11 +239,11 @@ const PasswordAnalyzer = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="bg-slate-900 border border-slate-700 rounded-xl p-8 shadow-sm flex flex-col"
+                    className="bg-transparent border border-[#334155] rounded-xl p-8 shadow-sm flex flex-col"
                 >
                     <div className="flex items-center gap-3 mb-6">
-                        <ChevronRight size={20} className="text-blue-500" />
-                        <h3 className="text-lg font-bold text-slate-200">Improvement Suggestions</h3>
+                        <ChevronRight size={20} className="text-[#2563EB]" />
+                        <h3 className="text-lg font-bold text-white">Improvement Suggestions</h3>
                     </div>
 
                     <AnimatePresence mode="wait">
@@ -255,12 +255,12 @@ const PasswordAnalyzer = () => {
                                         initial={{ opacity: 0, y: 5 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: i * 0.1 }}
-                                        className="flex gap-3 p-4 rounded-lg bg-slate-800 border border-slate-700"
+                                        className="flex gap-3 p-4 rounded-lg bg-[#1E293B] border border-[#334155]"
                                     >
                                         <div className="shrink-0 mt-0.5">
-                                            <AlertTriangle size={16} className="text-amber-500" />
+                                            <AlertTriangle size={16} className="text-[#F59E0B]" />
                                         </div>
-                                        <p className="text-sm font-medium text-slate-300 leading-relaxed">
+                                        <p className="text-sm font-medium text-white leading-relaxed">
                                             {sugg}
                                         </p>
                                     </motion.div>
@@ -272,11 +272,11 @@ const PasswordAnalyzer = () => {
                                 animate={{ opacity: 1 }}
                                 className="flex flex-col items-center justify-center flex-1 text-center py-6"
                             >
-                                <div className="p-4 rounded-full bg-emerald-500/10 mb-4 text-emerald-500">
+                                <div className="p-4 rounded-full bg-[#22C55E]/10 mb-4 text-[#22C55E]">
                                     <Shield size={32} />
                                 </div>
-                                <p className="text-sm font-bold text-emerald-500 mb-1">Password Optimal</p>
-                                <p className="text-xs text-slate-400">Excellent entropy and complexity detected.</p>
+                                <p className="text-sm font-bold text-[#22C55E] mb-1">Password Optimal</p>
+                                <p className="text-xs text-white/70">Excellent entropy and complexity detected.</p>
                             </motion.div>
                         )}
                     </AnimatePresence>

@@ -1,0 +1,134 @@
+import React, { useState } from 'react';
+import { KeyRound, ShieldAlert, CheckCircle2, EyeOff } from 'lucide-react';
+
+const PasswordBreachDetector = () => {
+    const [password, setPassword] = useState('');
+    const [isChecking, setIsChecking] = useState(false);
+    const [results, setResults] = useState(null);
+    const [showPassword, setShowPassword] = useState(false);
+
+    const checkPassword = (e) => {
+        e.preventDefault();
+        if (!password) return;
+
+        setIsChecking(true);
+        setResults(null);
+
+        // Mock database check logic
+        setTimeout(() => {
+            const lowerPw = password.toLowerCase();
+            let probability = 'Low';
+            let match = '';
+            let advice = '';
+
+            if (lowerPw === 'password' || lowerPw === '123456' || lowerPw === 'qwerty') {
+                probability = 'Critical';
+                match = 'Extremely common password found in top 100 worst passwords lists.';
+                advice = 'Change this password immediately across all your accounts. It provides practically zero security.';
+            } else if (lowerPw.includes('admin') || lowerPw.includes('root') || lowerPw.includes('login')) {
+                probability = 'High';
+                match = 'Contains default or highly guessable administrative keywords.';
+                advice = 'Avoid using predictable administrative terms in passwords. Use passphrases instead.';
+            } else if (password.length < 8) {
+                probability = 'Moderate';
+                match = 'Short password length increases vulnerability to dictionary and brute-force attacks, commonly found in breach datasets.';
+                advice = 'Extend password length to at least 12-16 characters. Consider using a password manager.';
+            } else {
+                probability = 'Low';
+                match = 'No direct matches found in common breached password patterns.';
+                advice = 'This password pattern appears unique. Ensure you do not reuse it across multiple services.';
+            }
+
+            setResults({ probability, match, advice });
+            setIsChecking(false);
+        }, 1500);
+    };
+
+    return (
+        <div className="space-y-6 max-w-4xl mx-auto">
+            <header className="mb-8">
+                <h1 className="text-3xl font-bold text-white flex items-center gap-3">
+                    <KeyRound className="text-[#2563EB]" size={32} />
+                    Password Breach Detector
+                </h1>
+                <p className="text-white/70 mt-2">
+                    Securely verify if your password pattern resembles known compromised passwords found in public data breaches.
+                </p>
+            </header>
+
+            {/* Input Section */}
+            <div className="glass-card p-6">
+                <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg flex items-start gap-3 text-blue-400 text-sm">
+                    <EyeOff size={18} className="flex-shrink-0 mt-0.5" />
+                    <p>This check is entirely local. Your password is not transmitted, stored, or sent to any server during this simulation.</p>
+                </div>
+                <form onSubmit={checkPassword} className="flex gap-4">
+                    <div className="relative flex-1">
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Enter password pattern to check..."
+                            className="w-full bg-transparent border border-[#334155] rounded-lg py-3 px-4 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-[#2563EB] transition-colors font-mono tracking-wider"
+                            required
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white"
+                        >
+                            {showPassword ? 'Hide' : 'Show'}
+                        </button>
+                    </div>
+                    <button
+                        type="submit"
+                        disabled={!password || isChecking}
+                        className="px-6 py-3 glass-btn-primary hover:bg-[#1D4ED8] disabled:bg-[#334155] disabled:text-white/50 text-white font-medium rounded-lg transition duration-200 ease-in-out hover:shadow-[0_0_15px_rgba(37,99,235,0.3)] flex items-center gap-2"
+                    >
+                        {isChecking ? (
+                            <>
+                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                Verifying...
+                            </>
+                        ) : (
+                            'Verify Pattern'
+                        )}
+                    </button>
+                </form>
+            </div>
+
+            {/* Results Section */}
+            {results && (
+                <div className="glass-card p-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className={`p-6 rounded-lg border mb-6 flex items-center justify-between gap-6 ${results.probability === 'Critical' || results.probability === 'High'
+                            ? 'bg-[#EF4444]/10 border-red-500/30 text-red-400'
+                            : results.probability === 'Moderate'
+                                ? 'bg-[#F59E0B]/10 border-amber-500/30 text-amber-400'
+                                : 'bg-[#22C55E]/10 border-green-500/30 text-green-400'
+                        }`}>
+                        <div>
+                            <h3 className="text-sm font-semibold uppercase tracking-wider mb-1 opacity-80">Breach Probability</h3>
+                            <span className="text-3xl font-bold">{results.probability}</span>
+                        </div>
+                        <div>
+                            {results.probability === 'Low' ? <CheckCircle2 size={40} /> : <ShieldAlert size={40} />}
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-transparent rounded-lg p-5 border border-[#334155]">
+                            <h4 className="font-semibold text-white mb-2">Pattern Match Analysis</h4>
+                            <p className="text-sm text-white/70 leading-relaxed">{results.match}</p>
+                        </div>
+                        <div className="bg-transparent rounded-lg p-5 border border-[#334155]">
+                            <h4 className="font-semibold text-white mb-2">Security Advice</h4>
+                            <p className="text-sm text-white/70 leading-relaxed">{results.advice}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default PasswordBreachDetector;

@@ -58,7 +58,7 @@ const FloatingAssistant = () => {
                 ) : (
                     <div className="relative">
                         <MessageSquare className="text-cyber-dark group-hover:scale-110 transition-transform" />
-                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-cyber-blue animate-pulse"></div>
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#EF4444] rounded-full border-2 border-cyber-blue animate-pulse"></div>
                     </div>
                 )}
             </button>

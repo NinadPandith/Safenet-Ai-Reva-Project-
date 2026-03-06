@@ -82,10 +82,10 @@ const RiskScoreQuiz = () => {
     const totalScore = Object.values(answers).reduce((a, b) => a + b, 0);
 
     const getGrade = (s) => {
-        if (s >= 90) return { label: "Excellent", color: "text-emerald-500", bg: "bg-emerald-500/10", border: "border-emerald-500/20", icon: ShieldCheck, advice: "Security posture is highly secure. Infrastructure shows exemplary hygiene." };
-        if (s >= 70) return { label: "Good", color: "text-blue-500", bg: "bg-blue-500/10", border: "border-blue-500/20", icon: Shield, advice: "Strong foundation. Minor hardening recommended for multi-vector defense." };
+        if (s >= 90) return { label: "Excellent", color: "text-[#22C55E]", bg: "bg-[#22C55E]/10", border: "border-green-500/20", icon: ShieldCheck, advice: "Security posture is highly secure. Infrastructure shows exemplary hygiene." };
+        if (s >= 70) return { label: "Good", color: "text-[#2563EB]", bg: "bg-blue-500/10", border: "border-blue-500/20", icon: Shield, advice: "Strong foundation. Minor hardening recommended for multi-vector defense." };
         if (s >= 40) return { label: "Fair", color: "text-orange-500", bg: "bg-orange-500/10", border: "border-orange-500/20", icon: ShieldAlert, advice: "Significant structural weaknesses detected. Immediate reinforcement required." };
-        return { label: "Poor", color: "text-red-500", bg: "bg-red-500/10", border: "border-red-500/20", icon: ShieldAlert, advice: "Infrastructure compromised or highly vulnerable. Total security reset protocol recommended." };
+        return { label: "Poor", color: "text-[#EF4444]", bg: "bg-[#EF4444]/10", border: "border-red-500/20", icon: ShieldAlert, advice: "Infrastructure compromised or highly vulnerable. Total security reset protocol recommended." };
     };
 
     const grade = getGrade(totalScore);
@@ -94,16 +94,16 @@ const RiskScoreQuiz = () => {
     return (
         <div className="space-y-6">
             {/* Header Section */}
-            <header className="bg-slate-900 border border-slate-700 rounded-2xl p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-sm">
+            <header className="bg-transparent border border-[#334155] rounded-2xl p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-sm">
                 <div className="flex items-center gap-6">
                     <div className="p-4 bg-blue-500/10 rounded-xl">
-                        <Radar className="text-blue-500" size={32} />
+                        <Radar className="text-[#2563EB]" size={32} />
                     </div>
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-200 tracking-tight">
+                        <h1 className="text-2xl font-bold text-white tracking-tight">
                             Risk Assessment Quiz
                         </h1>
-                        <p className="text-slate-400 text-sm mt-1">
+                        <p className="text-white/70 text-sm mt-1">
                             Evaluate organizational security hygiene and structural integrity posture.
                         </p>
                     </div>
@@ -111,9 +111,9 @@ const RiskScoreQuiz = () => {
             </header>
 
             <div className="max-w-4xl mx-auto py-4">
-                <div className="bg-slate-900 border border-slate-700 rounded-xl min-h-[500px] flex flex-col relative overflow-hidden shadow-sm">
+                <div className="bg-transparent border border-[#334155] rounded-xl min-h-[500px] flex flex-col relative overflow-hidden shadow-sm">
                     {/* Progress Bar */}
-                    <div className="absolute top-0 left-0 h-1.5 bg-slate-800 w-full overflow-hidden">
+                    <div className="absolute top-0 left-0 h-1.5 bg-[#1E293B] w-full overflow-hidden">
                         <motion.div
                             className="h-full bg-blue-500"
                             initial={{ width: 0 }}
@@ -138,19 +138,19 @@ const RiskScoreQuiz = () => {
                                             {[...Array(questions.length)].map((_, i) => (
                                                 <div
                                                     key={i}
-                                                    className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'bg-blue-500 w-6' : i < step ? 'bg-emerald-500 w-1.5' : 'bg-slate-700 w-1.5'}`}
+                                                    className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'bg-blue-500 w-6' : i < step ? 'bg-[#22C55E] w-1.5' : 'bg-[#334155] w-1.5'}`}
                                                 ></div>
                                             ))}
                                         </div>
-                                        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-2">Question {step + 1}</span>
+                                        <span className="text-xs font-semibold text-white/70 uppercase tracking-wider ml-2">Question {step + 1}</span>
                                     </div>
-                                    <div className="flex items-center gap-2 text-xs font-semibold text-blue-500 uppercase tracking-wider bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">
+                                    <div className="flex items-center gap-2 text-xs font-semibold text-[#2563EB] uppercase tracking-wider bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">
                                         <Activity size={14} className="animate-pulse" />
                                         Assessment Active
                                     </div>
                                 </div>
 
-                                <h3 className="text-2xl font-bold text-slate-200 mb-8 leading-tight">
+                                <h3 className="text-2xl font-bold text-white mb-8 leading-tight">
                                     {questions[step].question}
                                 </h3>
 
@@ -159,14 +159,14 @@ const RiskScoreQuiz = () => {
                                         <button
                                             key={i}
                                             onClick={() => handleAnswer(opt.score)}
-                                            className="w-full text-left p-5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-800/80 hover:border-blue-500/50 transition-all flex items-center justify-between group"
+                                            className="w-full text-left p-5 rounded-xl border border-[#334155] bg-[#1E293B] hover:bg-[#1E293B]/80 hover:border-blue-500/50 transition-all flex items-center justify-between group"
                                         >
                                             <div>
-                                                <span className="text-sm font-semibold text-slate-300 group-hover:text-white transition-colors block mb-1">{opt.label}</span>
-                                                <span className="text-xs text-slate-500 font-medium group-hover:text-slate-400 transition-colors">{opt.hint}</span>
+                                                <span className="text-sm font-semibold text-white group-hover:text-white transition-colors block mb-1">{opt.label}</span>
+                                                <span className="text-xs text-white/50 font-medium group-hover:text-white/70 transition-colors">{opt.hint}</span>
                                             </div>
-                                            <div className="w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center border border-slate-600 group-hover:bg-blue-500/10 group-hover:border-blue-500/30 transition-all">
-                                                <ChevronRight size={16} className="text-slate-400 group-hover:text-blue-500 transition-all" />
+                                            <div className="w-8 h-8 rounded-lg bg-[#334155] flex items-center justify-center border border-[#334155] group-hover:bg-blue-500/10 group-hover:border-blue-500/30 transition-all">
+                                                <ChevronRight size={16} className="text-white/70 group-hover:text-[#2563EB] transition-all" />
                                             </div>
                                         </button>
                                     ))}
@@ -190,23 +190,23 @@ const RiskScoreQuiz = () => {
                                 </motion.div>
 
                                 <div className="mb-10 w-full max-w-md">
-                                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Final Score Composite</p>
+                                    <p className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Final Score Composite</p>
                                     <div className={`text-6xl font-black ${grade.color} mb-4 tracking-tight`}>
                                         {totalScore}<span className="text-2xl font-bold ml-1 opacity-50">/100</span>
                                     </div>
                                     <div className={`text-lg font-bold uppercase tracking-wider px-4 py-1.5 rounded-full inline-block border ${grade.color} ${grade.bg} ${grade.border}`}>{grade.label}</div>
                                 </div>
 
-                                <div className="p-6 md:p-8 bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-xl text-left relative overflow-hidden mb-8">
-                                    <h4 className="text-sm font-bold text-slate-200 uppercase tracking-wider mb-3">Analysis Report</h4>
-                                    <p className="text-sm text-slate-400 leading-relaxed font-medium">
+                                <div className="p-6 md:p-8 glass-card w-full max-w-xl text-left relative overflow-hidden mb-8">
+                                    <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-3">Analysis Report</h4>
+                                    <p className="text-sm text-white/70 leading-relaxed font-medium">
                                         {grade.advice}
                                     </p>
                                 </div>
 
                                 <button
                                     onClick={() => { setStep(0); setAnswers({}); setIsFinished(false); }}
-                                    className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm transition-all bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 hover:text-white"
+                                    className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm transition-all bg-[#1E293B] text-white border border-[#334155] hover:bg-[#334155] hover:text-white"
                                 >
                                     <RefreshCcw size={16} /> Retake Assessment
                                 </button>

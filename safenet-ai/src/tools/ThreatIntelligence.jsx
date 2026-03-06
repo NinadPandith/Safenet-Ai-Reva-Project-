@@ -34,30 +34,30 @@ const ThreatIntelligence = () => {
     return (
         <div className="space-y-6">
             {/* Header Section */}
-            <header className="bg-slate-900 border border-slate-700 rounded-2xl p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-sm">
+            <header className="bg-transparent border border-[#334155] rounded-2xl p-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 shadow-sm">
                 <div className="flex items-center gap-6">
                     <div className="p-4 bg-blue-500/10 rounded-xl">
-                        <Radar className="text-blue-500" size={32} />
+                        <Radar className="text-[#2563EB]" size={32} />
                     </div>
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-200 tracking-tight">
+                        <h1 className="text-2xl font-bold text-white tracking-tight">
                             Threat Intelligence
                         </h1>
-                        <p className="text-slate-400 text-sm mt-1">
+                        <p className="text-white/70 text-sm mt-1">
                             Real-time global telemetry and heuristic threat analysis.
                         </p>
                     </div>
                 </div>
 
                 <div className="flex gap-4">
-                    <div className="px-5 py-3 rounded-lg border border-red-500/20 bg-red-500/10 flex items-center gap-4">
+                    <div className="px-5 py-3 rounded-lg border border-red-500/20 bg-[#EF4444]/10 flex items-center gap-4">
                         <div className="relative flex items-center justify-center w-3 h-3">
-                            <div className="absolute w-full h-full bg-red-500 rounded-full animate-ping opacity-75"></div>
-                            <div className="w-2 h-2 bg-red-500 rounded-full relative z-10"></div>
+                            <div className="absolute w-full h-full bg-[#EF4444] rounded-full animate-ping opacity-75"></div>
+                            <div className="w-2 h-2 bg-[#EF4444] rounded-full relative z-10"></div>
                         </div>
                         <div className="flex flex-col">
                             <span className="text-xs font-bold text-red-400 uppercase tracking-widest mb-0.5">Critical Alert</span>
-                            <span className="text-sm font-medium text-slate-200">Ransomware Spike Detected in EU-Finance</span>
+                            <span className="text-sm font-medium text-white">Ransomware Spike Detected in EU-Finance</span>
                         </div>
                     </div>
                 </div>
@@ -68,29 +68,29 @@ const ThreatIntelligence = () => {
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="lg:col-span-1 bg-slate-900 border border-slate-700 rounded-xl p-8 shadow-sm flex flex-col justify-center relative overflow-hidden"
+                    className="lg:col-span-1 bg-transparent border border-[#334155] rounded-xl p-8 shadow-sm flex flex-col justify-center relative overflow-hidden"
                 >
                     <div className="absolute -right-4 -bottom-4 opacity-5 pointer-events-none">
                         <Globe size={160} />
                     </div>
                     <div className="flex items-center gap-3 mb-6 relative z-10">
-                        <Globe size={20} className="text-slate-400" />
-                        <h3 className="text-sm font-bold text-slate-200">Node Telemetry</h3>
+                        <Globe size={20} className="text-white/70" />
+                        <h3 className="text-sm font-bold text-white">Node Telemetry</h3>
                     </div>
                     <div className="mb-8 relative z-10">
-                        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Active Neural Nodes</p>
-                        <h2 className="text-4xl font-bold text-slate-200 tracking-tight">
+                        <p className="text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Active Neural Nodes</p>
+                        <h2 className="text-4xl font-bold text-white tracking-tight">
                             {liveCount.toLocaleString()}
                         </h2>
                     </div>
                     <div className="space-y-3 relative z-10">
-                        <div className="flex justify-between items-center p-3 rounded-lg bg-slate-800 border border-slate-700">
-                            <span className="text-xs font-semibold text-slate-400">Health Index</span>
-                            <span className="text-sm font-bold text-emerald-500">99.98%</span>
+                        <div className="flex justify-between items-center p-3 rounded-lg bg-[#1E293B] border border-[#334155]">
+                            <span className="text-xs font-semibold text-white/70">Health Index</span>
+                            <span className="text-sm font-bold text-[#22C55E]">99.98%</span>
                         </div>
-                        <div className="flex justify-between items-center p-3 rounded-lg bg-slate-800 border border-slate-700">
-                            <span className="text-xs font-semibold text-slate-400">Global Δ</span>
-                            <span className="text-sm font-bold text-blue-500">+1,204 SEC</span>
+                        <div className="flex justify-between items-center p-3 rounded-lg bg-[#1E293B] border border-[#334155]">
+                            <span className="text-xs font-semibold text-white/70">Global Δ</span>
+                            <span className="text-sm font-bold text-[#2563EB]">+1,204 SEC</span>
                         </div>
                     </div>
                 </motion.div>
@@ -99,23 +99,23 @@ const ThreatIntelligence = () => {
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="lg:col-span-3 bg-slate-900 border border-slate-700 rounded-xl p-8 shadow-sm flex flex-col min-h-[450px]"
+                    className="lg:col-span-3 bg-transparent border border-[#334155] rounded-xl p-8 shadow-sm flex flex-col min-h-[450px]"
                 >
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8">
                         <div>
-                            <h3 className="text-lg font-bold text-slate-200 flex items-center gap-2">
-                                <Activity size={18} className="text-slate-400" /> Multi-Vector Ingress Analysis
+                            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                                <Activity size={18} className="text-white/70" /> Multi-Vector Ingress Analysis
                             </h3>
-                            <p className="text-sm text-slate-400 mt-1">Telemetry window: Last 24 Hours</p>
+                            <p className="text-sm text-white/70 mt-1">Telemetry window: Last 24 Hours</p>
                         </div>
                         <div className="flex gap-6">
                             <div className="flex items-center gap-2">
-                                <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
-                                <span className="text-xs font-semibold text-slate-300">Exploits</span>
+                                <div className="w-2.5 h-2.5 rounded-full bg-[#EF4444]"></div>
+                                <span className="text-xs font-semibold text-white">Exploits</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <div className="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
-                                <span className="text-xs font-semibold text-slate-300">Malware</span>
+                                <span className="text-xs font-semibold text-white">Malware</span>
                             </div>
                         </div>
                     </div>
@@ -158,23 +158,23 @@ const ThreatIntelligence = () => {
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="lg:col-span-2 bg-slate-900 border border-slate-700 rounded-xl p-8 shadow-sm flex flex-col lg:flex-row gap-8"
+                    className="lg:col-span-2 bg-transparent border border-[#334155] rounded-xl p-8 shadow-sm flex flex-col lg:flex-row gap-8"
                 >
                     <div className="flex-1 space-y-6">
                         <div>
-                            <h3 className="text-lg font-bold text-slate-200 flex items-center gap-2">
-                                <Globe size={18} className="text-slate-400" /> Regional Intensity
+                            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                                <Globe size={18} className="text-white/70" /> Regional Intensity
                             </h3>
-                            <p className="text-sm text-slate-400 mt-1">Cross-Region Threat Saturation</p>
+                            <p className="text-sm text-white/70 mt-1">Cross-Region Threat Saturation</p>
                         </div>
                         <div className="space-y-5">
                             {regionData.map((region, i) => (
                                 <div key={i} className="space-y-2">
                                     <div className="flex justify-between items-center">
-                                        <span className="text-sm font-semibold text-slate-300">{region.name}</span>
-                                        <span className="text-xs font-bold text-slate-400">{region.value}%</span>
+                                        <span className="text-sm font-semibold text-white">{region.name}</span>
+                                        <span className="text-xs font-bold text-white/70">{region.value}%</span>
                                     </div>
-                                    <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                                    <div className="h-2 w-full bg-[#1E293B] rounded-full overflow-hidden">
                                         <motion.div
                                             initial={{ width: 0 }}
                                             animate={{ width: `${region.value}%` }}
@@ -188,12 +188,12 @@ const ThreatIntelligence = () => {
                         </div>
                     </div>
 
-                    <div className="lg:w-48 flex flex-col items-center justify-center p-6 bg-slate-800 border border-slate-700 rounded-xl text-center shrink-0 h-full">
-                        <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-4">
-                            <ShieldAlert size={28} className="text-red-500" />
+                    <div className="lg:w-48 flex flex-col items-center justify-center p-6 glass-card text-center shrink-0 h-full">
+                        <div className="w-16 h-16 rounded-full bg-[#EF4444]/10 flex items-center justify-center mb-4">
+                            <ShieldAlert size={28} className="text-[#EF4444]" />
                         </div>
-                        <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Overall Saturation</h4>
-                        <p className="text-2xl font-bold text-slate-200">HIGH</p>
+                        <h4 className="text-xs font-bold text-white/70 uppercase tracking-wider mb-2">Overall Saturation</h4>
+                        <p className="text-2xl font-bold text-white">HIGH</p>
                     </div>
                 </motion.div>
 
@@ -201,39 +201,39 @@ const ThreatIntelligence = () => {
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="lg:col-span-2 bg-slate-900 border border-slate-700 rounded-xl p-8 shadow-sm grid grid-cols-1 sm:grid-cols-2 gap-6"
+                    className="lg:col-span-2 bg-transparent border border-[#334155] rounded-xl p-8 shadow-sm grid grid-cols-1 sm:grid-cols-2 gap-6"
                 >
                     <div className="flex flex-col justify-between space-y-6">
                         <div className="space-y-2">
-                            <div className="flex items-center gap-2 text-slate-400 mb-2">
+                            <div className="flex items-center gap-2 text-white/70 mb-2">
                                 <Server size={18} />
-                                <h4 className="text-sm font-bold text-slate-200">Core Fabric</h4>
+                                <h4 className="text-sm font-bold text-white">Core Fabric</h4>
                             </div>
                             <div className="space-y-1">
-                                <p className="text-2xl font-bold text-slate-200">STABLE</p>
-                                <p className="text-xs font-semibold text-emerald-500 uppercase tracking-wider">Replication: Online</p>
+                                <p className="text-2xl font-bold text-white">STABLE</p>
+                                <p className="text-xs font-semibold text-[#22C55E] uppercase tracking-wider">Replication: Online</p>
                             </div>
                         </div>
-                        <div className="p-4 rounded-lg bg-slate-800 border border-slate-700">
-                            <p className="text-xs font-semibold text-slate-400 mb-1">IO Latency</p>
-                            <p className="text-lg font-bold text-blue-500">0.84ms</p>
+                        <div className="p-4 rounded-lg bg-[#1E293B] border border-[#334155]">
+                            <p className="text-xs font-semibold text-white/70 mb-1">IO Latency</p>
+                            <p className="text-lg font-bold text-[#2563EB]">0.84ms</p>
                         </div>
                     </div>
 
                     <div className="flex flex-col justify-between space-y-6">
                         <div className="space-y-2">
-                            <div className="flex items-center gap-2 text-slate-400 mb-2">
+                            <div className="flex items-center gap-2 text-white/70 mb-2">
                                 <Brain size={18} />
-                                <h4 className="text-sm font-bold text-slate-200">Neural Engine</h4>
+                                <h4 className="text-sm font-bold text-white">Neural Engine</h4>
                             </div>
                             <div className="space-y-1">
-                                <p className="text-2xl font-bold text-slate-200">94% LOAD</p>
+                                <p className="text-2xl font-bold text-white">94% LOAD</p>
                                 <p className="text-xs font-semibold text-orange-500 uppercase tracking-wider">Cluster: Analyzing</p>
                             </div>
                         </div>
-                        <div className="p-4 rounded-lg bg-slate-800 border border-slate-700">
-                            <p className="text-xs font-semibold text-slate-400 mb-1">Processors</p>
-                            <p className="text-lg font-bold text-blue-500">4,096 Cores</p>
+                        <div className="p-4 rounded-lg bg-[#1E293B] border border-[#334155]">
+                            <p className="text-xs font-semibold text-white/70 mb-1">Processors</p>
+                            <p className="text-lg font-bold text-[#2563EB]">4,096 Cores</p>
                         </div>
                     </div>
                 </motion.div>
