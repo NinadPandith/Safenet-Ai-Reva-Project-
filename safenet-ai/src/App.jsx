@@ -9,24 +9,14 @@ import URLScanner from './tools/URLScanner';
 import PermissionAnalyzer from './tools/PermissionAnalyzer';
 import PasswordAnalyzer from './tools/PasswordAnalyzer';
 import AIChatbot from './tools/AIChatbot';
-import RiskScoreQuiz from './tools/RiskScoreQuiz';
-import ThreatIntelligence from './tools/ThreatIntelligence';
 import DomainImpersonation from './tools/DomainImpersonation';
 import DataBreachChecker from './tools/DataBreachChecker';
-import SocialEngineeringDetector from './tools/SocialEngineeringDetector';
-import FileScanner from './tools/FileScanner';
 import PasswordBreachDetector from './tools/PasswordBreachDetector';
-import DigitalFootprint from './tools/DigitalFootprint';
-import AttackSimulator from './tools/AttackSimulator';
 import SecurityScore from './tools/SecurityScore';
 import SafeDownload from './tools/SafeDownload';
-import KnowledgeQuiz from './tools/KnowledgeQuiz';
 import FloatingAssistant from './components/FloatingAssistant';
 import ProfileModal from './components/ProfileModal';
 import SettingsModal from './components/SettingsModal';
-import SecurityPreferencesModal from './components/SecurityPreferencesModal';
-import APIKeysModal from './components/APIKeysModal';
-import SignOutModal from './components/SignOutModal';
 import { ToastProvider } from './contexts/ToastContext';
 import { SettingsProvider } from './contexts/SettingsContext';
 
@@ -34,9 +24,6 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
-  const [isAPIKeysModalOpen, setIsAPIKeysModalOpen] = useState(false);
-  const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
 
   return (
     <ToastProvider>
@@ -56,9 +43,6 @@ function App() {
                       onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
                       onOpenProfile={() => setIsProfileModalOpen(true)}
                       onOpenSettings={() => setIsSettingsModalOpen(true)}
-                      onOpenSecurity={() => setIsSecurityModalOpen(true)}
-                      onOpenAPIKeys={() => setIsAPIKeysModalOpen(true)}
-                      onOpenSignOut={() => setIsSignOutModalOpen(true)}
                     />
                     <Sidebar
                       isOpen={isSidebarOpen}
@@ -73,18 +57,11 @@ function App() {
                           <Route path="/tool/permissions" element={<PermissionAnalyzer />} />
                           <Route path="/tool/password" element={<PasswordAnalyzer />} />
                           <Route path="/tool/chat" element={<AIChatbot />} />
-                          <Route path="/tool/risk" element={<RiskScoreQuiz />} />
-                          <Route path="/tool/intel" element={<ThreatIntelligence />} />
                           <Route path="/tool/domain" element={<DomainImpersonation />} />
                           <Route path="/tool/breach" element={<DataBreachChecker />} />
-                          <Route path="/tool/social" element={<SocialEngineeringDetector />} />
-                          <Route path="/tool/file" element={<FileScanner />} />
                           <Route path="/tool/pw-breach" element={<PasswordBreachDetector />} />
-                          <Route path="/tool/footprint" element={<DigitalFootprint />} />
-                          <Route path="/tool/simulator" element={<AttackSimulator />} />
                           <Route path="/tool/score" element={<SecurityScore />} />
                           <Route path="/tool/download" element={<SafeDownload />} />
-                          <Route path="/tool/quiz" element={<KnowledgeQuiz />} />
                           <Route path="*" element={<Navigate to="/dashboard" replace />} />
                         </Routes>
                       </div>
@@ -98,9 +75,6 @@ function App() {
                       {/* Modals */}
                       <ProfileModal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} />
                       <SettingsModal isOpen={isSettingsModalOpen} onClose={() => setIsSettingsModalOpen(false)} />
-                      <SecurityPreferencesModal isOpen={isSecurityModalOpen} onClose={() => setIsSecurityModalOpen(false)} />
-                      <APIKeysModal isOpen={isAPIKeysModalOpen} onClose={() => setIsAPIKeysModalOpen(false)} />
-                      <SignOutModal isOpen={isSignOutModalOpen} onClose={() => setIsSignOutModalOpen(false)} />
                     </main>
                   </div>
                 }

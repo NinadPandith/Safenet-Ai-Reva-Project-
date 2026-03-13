@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -22,6 +23,7 @@ import {
     Database,
     Binary
 } from 'lucide-react';
+import { analyzePermissions } from '../services/mlEngine';
 
 const PermissionAnalyzer = () => {
     const [appName, setAppName] = useState('');
@@ -46,36 +48,22 @@ const PermissionAnalyzer = () => {
         );
     };
 
-    const analyzePermissions = () => {
+    const handleAnalyzePermissions = () => {
         if (!appName || selectedPermissions.length === 0) return;
         setIsAnalyzing(true);
         setResult(null);
 
         setTimeout(() => {
-            let riskScore = selectedPermissions.length * 12;
-            let riskyCombos = [];
-
-            if (selectedPermissions.includes('camera') && selectedPermissions.includes('mic')) {
-                riskScore += 20;
-                riskyCombos.push("Full AV Surveillance Vector detected (Camera + Mic).");
-            }
-            if (selectedPermissions.includes('location') && selectedPermissions.includes('contacts')) {
-                riskScore += 15;
-                riskyCombos.push("Social-Spatial Tracking Analysis (Location + Contacts).");
-            }
-            if (selectedPermissions.includes('sms') || selectedPermissions.includes('overlay')) {
-                riskScore += 25;
-                riskyCombos.push("Credential Hijack Surface detected (Overlay/SMS access).");
-            }
+            const mlResult = analyzePermissions({ permissions: selectedPermissions });
 
             setResult({
-                score: Math.min(riskScore, 100),
-                riskyCombos,
-                summary: riskScore > 70 ? "Critical Risk" : riskScore > 40 ? "Elevated Risk" : "Nominal Access",
+                score: mlResult.riskScore,
+                riskyCombos: mlResult.detectedIndicators,
+                summary: mlResult.threatLevel === 'Critical' ? 'Critical Risk' : mlResult.threatLevel === 'Warning' ? 'Elevated Risk' : 'Nominal Access',
                 entropy: (Math.random() * 0.99).toFixed(4)
             });
             setIsAnalyzing(false);
-        }, 1500);
+        }, 800);
     };
 
     return (
@@ -126,7 +114,7 @@ const PermissionAnalyzer = () => {
                         <div className="space-y-3">
                             <label className="text-xs font-semibold text-white/70 uppercase tracking-wider block">Analysis Core</label>
                             <button
-                                onClick={analyzePermissions}
+                                onClick={handleAnalyzePermissions}
                                 disabled={isAnalyzing || !appName || selectedPermissions.length === 0}
                                 className={`w-full py-3.5 rounded-lg font-semibold text-sm transition-all focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:ring-offset-2 focus:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2
                                     ${isAnalyzing || !appName || selectedPermissions.length === 0 ? 'bg-[#1E293B] text-white/70 border border-[#334155]' : 'glass-btn-primary'}`}
@@ -243,7 +231,7 @@ const PermissionAnalyzer = () => {
                                         <div className="p-4 rounded-lg bg-[#1E293B] border border-[#334155] mt-auto">
                                             <p className="text-xs font-medium text-white/70 font-mono leading-relaxed">
                                                 Entropy Coef: {result.entropy}<br />
-                                                Report ID: PA-{Math.floor(Math.random() * 9000) + 1000}
+                                                Report ID: PA-{result.entropy.toString().replace('.', '').substring(1, 5)}
                                             </p>
                                         </div>
                                     </div>

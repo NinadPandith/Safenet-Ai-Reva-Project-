@@ -17,6 +17,7 @@ import {
     Lock
 } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
+import { analyzeURL } from '../services/mlEngine';
 
 const URLScanner = () => {
     const { settings } = useSettings();
@@ -25,50 +26,58 @@ const URLScanner = () => {
     const [result, setResult] = useState(null);
 
     const scanURL = () => {
-        if (!url.trim()) return;
+        const cleanUrl = url.trim();
+        if (!cleanUrl) return;
         setIsScanning(true);
         setResult(null);
 
-        // Simulated scan
+        if (cleanUrl.match(/https?:\/\/.*https?:\/\//)) {
+            setTimeout(() => {
+                setResult({
+                    score: 95,
+                    status: 'Critical',
+                    details: 'Suspicious URL pattern detected: Multiple protocol prefixes (http/https) found, indicating potential obfuscation.',
+                    ip: '--',
+                    latency: '--',
+                    indicators: [
+                        { label: 'SSL Validation', status: false },
+                        { label: 'Domain Reputation', status: false },
+                        { label: 'Heuristic Match', status: false },
+                        { label: 'Protocol Integrity', status: false }
+                    ],
+                    detectedIndicators: ['Multiple Protocol Prefixes', 'URL Obfuscation'],
+                    confidence: 99
+                });
+                setIsScanning(false);
+            }, 800);
+            return;
+        }
+
+        // ML Engine random forest scan
         setTimeout(() => {
-            let score = 95;
-            let status = "Secure";
-            let details = "Link analysis confirmed structural integrity. No malicious pattern clusters detected within cross-sector registries.";
-
-            const targetURL = url.toLowerCase();
-
-            if (targetURL.includes('google-security-verify.com') || targetURL.includes('login-microsoft.net')) {
-                score = 12;
-                status = "Critical";
-                details = "High-confidence brand impersonation cluster detected. Domain registered under non-designated TLD indicating spear-phishing.";
-            } else if (targetURL.startsWith('http://')) {
-                score = 45;
-                status = "Vulnerable";
-                details = "Missing SSL/TLS cryptographic envelope. Communication vector exposed to MITM injection.";
-            } else if (targetURL.includes('bit.ly') || targetURL.includes('t.co') || targetURL.includes('tinyurl')) {
-                score = 65;
-                status = "Caution";
-                details = "URL shortener node detected. Target redirect hidden behind obfuscation layer. Potential cloaked redirection trajectory.";
-            }
+            const mlResult = analyzeURL(cleanUrl);
 
             setResult({
-                score,
-                status,
-                details,
+                score: mlResult.riskScore,
+                status: mlResult.threatLevel,
+                details: mlResult.recommendations.join(" "),
                 ip: "104.21.34." + Math.floor(Math.random() * 255),
                 latency: Math.floor(Math.random() * 40 + 5) + "ms",
                 indicators: [
-                    { label: 'SSL Validation', status: !targetURL.startsWith('http://') },
-                    { label: 'Domain Reputation', status: score > 30 },
-                    { label: 'Heuristic Match', status: score > 50 },
-                    { label: 'TLD Integrity', status: true }
-                ]
+                    { label: 'SSL Validation', status: mlResult.threatLevel === 'Safe' },
+                    { label: 'Domain Reputation', status: mlResult.riskScore < 40 },
+                    { label: 'Heuristic Match', status: mlResult.threatLevel !== 'Critical' },
+                    { label: 'TLD Integrity', status: mlResult.riskScore < 50 }
+                ],
+                detectedIndicators: mlResult.detectedIndicators,
+                confidence: mlResult.confidence
             });
             setIsScanning(false);
-        }, 2000);
+        }, 800);
     };
 
     const handlePaste = (e) => {
+        e.preventDefault();
         const pastedContent = e.clipboardData.getData('Text');
         setUrl(pastedContent);
 
@@ -203,14 +212,14 @@ const URLScanner = () => {
                                 className="flex flex-col items-center"
                             >
                                 <div className={`w-32 h-32 rounded-full border-8 flex items-center justify-center mb-6 shadow-sm
-                                    ${result.score < 30 ? 'border-red-500/20 text-[#EF4444] bg-[#EF4444]/5' : result.score < 70 ? 'border-orange-500/20 text-orange-500 bg-orange-500/5' : 'border-green-500/20 text-[#22C55E] bg-[#22C55E]/5'}`}>
+                                    ${result.score > 70 ? 'border-red-500/20 text-[#EF4444] bg-[#EF4444]/5' : result.score > 30 ? 'border-orange-500/20 text-orange-500 bg-orange-500/5' : 'border-green-500/20 text-[#22C55E] bg-[#22C55E]/5'}`}>
                                     <div className="flex flex-col items-center">
                                         <span className="text-4xl font-bold tracking-tight">{result.score}</span>
-                                        <span className="text-xs font-semibold uppercase tracking-wider opacity-80 mt-1">Score</span>
+                                        <span className="text-xs font-semibold uppercase tracking-wider opacity-80 mt-1">Risk Score</span>
                                     </div>
                                 </div>
                                 <h3 className={`text-sm font-bold uppercase tracking-wider px-4 py-1.5 rounded-full border
-                                    ${result.status === 'Secure' ? 'text-[#22C55E] bg-[#22C55E]/10 border-green-500/20' : result.status === 'Critical' ? 'text-[#EF4444] bg-[#EF4444]/10 border-red-500/20' : 'text-orange-500 bg-orange-500/10 border-orange-500/20'}`}>
+                                    ${result.status === 'Safe' ? 'text-[#22C55E] bg-[#22C55E]/10 border-green-500/20' : result.status === 'Critical' ? 'text-[#EF4444] bg-[#EF4444]/10 border-red-500/20' : 'text-orange-500 bg-orange-500/10 border-orange-500/20'}`}>
                                     {result.status}
                                 </h3>
                             </motion.div>

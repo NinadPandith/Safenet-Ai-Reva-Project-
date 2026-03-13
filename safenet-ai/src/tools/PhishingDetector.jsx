@@ -12,6 +12,7 @@ import {
     MailWarning
 } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
+import { analyzePhishing } from '../services/mlEngine';
 
 const PhishingDetector = () => {
     const { settings } = useSettings();
@@ -24,27 +25,28 @@ const PhishingDetector = () => {
         setIsScanning(true);
         setResult(null);
 
-        // Simulated scan
+        // ML Engine NLP scan
         setTimeout(() => {
-            const lowerInput = input.toLowerCase();
-            const isMalicious = lowerInput.includes('urgent') || lowerInput.includes('verify') || lowerInput.includes('password');
-            const score = isMalicious ? 88 : 12;
+            const mlResult = analyzePhishing(input);
+
+            let statusLabel = 'SECURE';
+            if (mlResult.threatLevel === 'Critical') statusLabel = 'CRITICAL';
+            else if (mlResult.threatLevel === 'Warning') statusLabel = 'WARNING';
 
             setResult({
-                status: isMalicious ? 'CRITICAL' : 'SECURE',
-                riskScore: score,
+                status: statusLabel,
+                riskScore: mlResult.riskScore,
+                signals: mlResult.detectedIndicators,
                 indicators: [
-                    { label: 'Keyword Heuristics', status: true },
-                    { label: 'Semantic Threat Analysis', status: !isMalicious },
-                    { label: 'Cross-Vector Matching', status: !isMalicious },
-                    { label: 'Sender Reputation', status: true }
+                    { label: 'Keyword Heuristics', status: mlResult.threatLevel === 'Safe' },
+                    { label: 'Semantic Threat Analysis', status: mlResult.threatLevel === 'Safe' },
+                    { label: 'Cross-Vector Matching', status: mlResult.threatLevel === 'Safe' },
+                    { label: 'Sender Reputation', status: mlResult.confidence > 80 }
                 ],
-                details: isMalicious
-                    ? "Analysis detected high semantic overlap with known spear-phishing templates. Recommendation: Do not click any links."
-                    : "Content structure appears normal. No obvious malicious indicators found."
+                details: mlResult.recommendations.join(" ")
             });
             setIsScanning(false);
-        }, 1500);
+        }, 800);
     };
 
     // Simulate incoming message scan if Email Threat Detection is active
@@ -53,7 +55,8 @@ const PhishingDetector = () => {
 
         const timer = setTimeout(() => {
             if (!input && !isScanning && !result) {
-                setInput("URGENT: Verify your account password immediately or your access will be suspended within 24 hours.");
+                // Modified to trigger at least 3 indicators: urgency, credential harvesting, account suspension
+                setInput("URGENT: Verify your account immediately or your account suspended within 24 hours. Login to confirm your identity at http://secure-login.xyz/auth");
                 setTimeout(() => {
                     document.getElementById('phish-scan-btn')?.click();
                 }, 500);
@@ -249,6 +252,39 @@ const PhishingDetector = () => {
                         </div>
                     </div>
                 </motion.div>
+
+                {/* 5. Detected Indicators Card */}
+                <AnimatePresence>
+                    {result && result.signals && result.signals.length > 0 && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                            animate={{ opacity: 1, height: 'auto', marginTop: 0 }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="lg:col-span-3 bg-[#1F2937] border border-[#374151] rounded-xl p-8 shadow-sm overflow-hidden"
+                        >
+                            <div className="flex items-center gap-3 mb-6">
+                                <ShieldAlert size={20} className="text-[#EF4444]" />
+                                <h3 className="text-lg font-bold text-[#E5E7EB]">Detected Indicators</h3>
+                            </div>
+
+                            <div className="flex flex-wrap gap-3">
+                                {result.signals.map((indicator, idx) => (
+                                    <motion.div
+                                        key={idx}
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ duration: 0.25, delay: idx * 0.1 }}
+                                        className="flex items-center gap-2 bg-[#374151] border border-[#4B5563] rounded-[6px] px-[10px] py-[6px]"
+                                    >
+                                        <AlertCircle size={14} className="text-[#F59E0B]" />
+                                        <span className="text-[13px] text-[#E5E7EB] font-medium">{indicator}</span>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </div>
     );

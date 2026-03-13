@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import jsPDF from 'jspdf';
@@ -57,18 +58,6 @@ const Dashboard = () => {
             link: "/tool/permissions"
         },
         {
-            icon: Activity,
-            title: "Cyber Risk Score",
-            description: "Assess your organization's security posture through quantified risk scoring.",
-            link: "/tool/risk"
-        },
-        {
-            icon: TrendingUp,
-            title: "Threat Intelligence",
-            description: "Monitor global threat telemetry and zero-day vulnerability alerts in real-time.",
-            link: "/tool/intel"
-        },
-        {
             icon: Target,
             title: "Security Score",
             description: "Your holistic security posture calculated from all active sensors.",
@@ -97,36 +86,6 @@ const Dashboard = () => {
             title: "Data Breach Check",
             description: "Verify if your email has been exposed in public data breaches.",
             link: "/tool/breach"
-        },
-        {
-            icon: FileSearch,
-            title: "Malware Risk Scan",
-            description: "Analyze files for hidden executables and malware delivery mechanisms.",
-            link: "/tool/file"
-        },
-        {
-            icon: MessageSquareWarning,
-            title: "Social Engineering",
-            description: "Analyze suspicious texts for psychological manipulation.",
-            link: "/tool/social"
-        },
-        {
-            icon: BookOpen,
-            title: "Knowledge Quiz",
-            description: "Test your cybersecurity awareness and learn essential concepts.",
-            link: "/tool/quiz"
-        },
-        {
-            icon: Footprints,
-            title: "Digital Footprint",
-            description: "Estimate your online exposure and identify vulnerabilities.",
-            link: "/tool/footprint"
-        },
-        {
-            icon: Presentation,
-            title: "Attack Simulator",
-            description: "Visualize and understand the anatomy of common cyber attacks.",
-            link: "/tool/simulator"
         },
         {
             icon: MessageSquare,

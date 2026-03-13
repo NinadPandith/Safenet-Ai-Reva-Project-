@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, AlertTriangle, XCircle, Info, X } from 'lucide-react';
@@ -6,6 +7,10 @@ const ToastContext = createContext(null);
 
 export const ToastProvider = ({ children }) => {
     const [toasts, setToasts] = useState([]);
+
+    const removeToast = useCallback((id) => {
+        setToasts(prev => prev.filter(toast => toast.id !== id));
+    }, []);
 
     const addToast = useCallback((message, type = 'info', duration = 4000) => {
         const id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
@@ -16,11 +21,7 @@ export const ToastProvider = ({ children }) => {
                 removeToast(id);
             }, duration);
         }
-    }, []);
-
-    const removeToast = useCallback((id) => {
-        setToasts(prev => prev.filter(toast => toast.id !== id));
-    }, []);
+    }, [removeToast]);
 
     const getIcon = (type) => {
         switch (type) {
@@ -49,8 +50,8 @@ export const ToastProvider = ({ children }) => {
                         >
                             {/* Accent Line */}
                             <div className={`absolute left-0 top-0 bottom-0 w-1 ${toast.type === 'success' ? 'bg-green-500' :
-                                    toast.type === 'error' ? 'bg-red-500' :
-                                        toast.type === 'warning' ? 'bg-amber-500' : 'bg-blue-500'
+                                toast.type === 'error' ? 'bg-red-500' :
+                                    toast.type === 'warning' ? 'bg-amber-500' : 'bg-blue-500'
                                 }`} />
 
                             <div className="shrink-0 mt-0.5 ml-1">{getIcon(toast.type)}</div>

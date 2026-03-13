@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Send, Bot, User, Shield, Zap, Info, Cpu, Activity, Fingerprint, Lock, Sparkles, Terminal } from 'lucide-react';
+import { analyzeChatIntent } from '../services/mlEngine';
 
 const AIChatbot = () => {
     const [messages, setMessages] = useState([
@@ -33,15 +35,17 @@ const AIChatbot = () => {
         setIsTyping(true);
 
         setTimeout(() => {
+            const mlResult = analyzeChatIntent(input);
             let response = "I've processed your request. I recommend reviewing the main dashboard for active alerts or running a scan.";
-            const lowInput = input.toLowerCase();
 
-            if (lowInput.includes('phishing')) {
+            if (mlResult.intentClass === 'phishing') {
                 response = "Phishing typically involves brand mimicry or urgent requests. Deploy our 'Phishing Detector' tool to scan suspicious emails or links.";
-            } else if (lowInput.includes('password')) {
+            } else if (mlResult.intentClass === 'password') {
                 response = "Weak credentials are a high-value failpoint. I recommend testing your primary passwords using our 'Password Analyzer' module.";
-            } else if (lowInput.includes('wifi') || lowInput.includes('public')) {
+            } else if (mlResult.intentClass === 'vpn') {
                 response = "Public WiFi lacks strong cryptographic isolation. A VPN is highly recommended for secure operations on untrusted networks.";
+            } else if (mlResult.intentClass === 'malware') {
+                response = "Malware often disguises itself as legitimate files. Use our 'Safe Download Checker' before opening any suspicious attachments.";
             }
 
             setMessages(prev => [...prev, {

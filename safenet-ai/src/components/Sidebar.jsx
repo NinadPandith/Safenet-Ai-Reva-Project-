@@ -35,13 +35,6 @@ const Sidebar = ({ isOpen, onOpenSettings }) => {
         { icon: KeyRound, label: 'Password Breach', path: '/tool/pw-breach' },
         { icon: Database, label: 'Data Breach Check', path: '/tool/breach' },
         { icon: Smartphone, label: 'App Permissions', path: '/tool/permissions' },
-        { icon: FileSearch, label: 'Malware Risk Scan', path: '/tool/file' },
-        { icon: MessageSquareWarning, label: 'Social Engineering', path: '/tool/social' },
-        { icon: Activity, label: 'Cyber Risk Quiz', path: '/tool/risk' },
-        { icon: BookOpen, label: 'Knowledge Quiz', path: '/tool/quiz' },
-        { icon: Footprints, label: 'Digital Footprint', path: '/tool/footprint' },
-        { icon: TrendingUp, label: 'Threat Intelligence', path: '/tool/intel' },
-        { icon: Presentation, label: 'Attack Simulator', path: '/tool/simulator' },
         { icon: MessageSquare, label: 'AI Assistant', path: '/tool/chat' },
     ];
 

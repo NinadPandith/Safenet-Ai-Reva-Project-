@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Settings, Shield, Bell, HardDrive, Download, Trash2, RotateCcw } from 'lucide-react';

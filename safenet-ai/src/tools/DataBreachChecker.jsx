@@ -1,5 +1,36 @@
 import React, { useState } from 'react';
-import { Mail, Search, AlertOctagon, ShieldCheck, Database, FileText } from 'lucide-react';
+import { Mail, Search, AlertOctagon, ShieldCheck, Database, FileText, Users, Shield, Activity } from 'lucide-react';
+import { analyzeDataBreach } from '../services/mlEngine';
+
+const Counter = ({ end, suffix = '', decimals = 0 }) => {
+    const [count, setCount] = useState(0);
+
+    React.useEffect(() => {
+        let startTime;
+        const duration = 2000; // 2 seconds animation
+
+        const animate = (currentTime) => {
+            if (!startTime) startTime = currentTime;
+            const progress = Math.min((currentTime - startTime) / duration, 1);
+            // Ease out quart
+            const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+
+            setCount(end * easeOutQuart);
+
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            } else {
+                setCount(end);
+            }
+        };
+
+        requestAnimationFrame(animate);
+    }, [end]);
+
+    const formatted = decimals > 0 ? count.toFixed(decimals) : Math.floor(count).toLocaleString();
+
+    return <span>{formatted}{suffix}</span>;
+};
 
 const DataBreachChecker = () => {
     const [email, setEmail] = useState('');
@@ -13,23 +44,25 @@ const DataBreachChecker = () => {
         setIsChecking(true);
         setResults(null);
 
-        // Mock breach data logic
+        // ML Engine simulation
         setTimeout(() => {
-            const isBreached = email.includes('admin') || email.includes('test') || email.length > 15;
+            const mlResult = analyzeDataBreach(email);
 
-            if (isBreached) {
+            if (mlResult.riskScore > 50) {
                 setResults({
                     breached: true,
-                    count: Math.floor(Math.random() * 5) + 1,
-                    dataTypes: ['Email', 'Password Hash', 'Phone Number', 'IP Address'].slice(0, Math.floor(Math.random() * 3) + 2),
-                    advice: 'Change your passwords immediately across all compromised services. Enable Two-Factor Authentication (2FA).'
+                    count: mlResult.riskScore > 80 ? Math.floor(Math.random() * 5) + 3 : Math.floor(Math.random() * 3) + 1,
+                    dataTypes: mlResult.detectedIndicators,
+                    advice: mlResult.recommendations[0],
+                    confidence: mlResult.confidence
                 });
             } else {
                 setResults({
                     breached: false,
                     count: 0,
                     dataTypes: [],
-                    advice: 'No breaches found for this email address. Continue practicing good security habits.'
+                    advice: mlResult.recommendations[0],
+                    confidence: mlResult.confidence
                 });
             }
             setIsChecking(false);
@@ -83,8 +116,8 @@ const DataBreachChecker = () => {
             {results && (
                 <div className="glass-card p-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className={`p-6 rounded-lg border mb-6 flex flex-col items-center justify-center text-center ${results.breached
-                            ? 'bg-[#EF4444]/10 border-red-500/30'
-                            : 'bg-[#22C55E]/10 border-green-500/30'
+                        ? 'bg-[#EF4444]/10 border-red-500/30'
+                        : 'bg-[#22C55E]/10 border-green-500/30'
                         }`}>
                         {results.breached ? (
                             <>
@@ -126,6 +159,77 @@ const DataBreachChecker = () => {
                     </div>
                 </div>
             )}
+
+            {/* Global Breach Intelligence Section */}
+            <div className="mt-12 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <div style={{ background: 'rgba(15, 23, 42, 0.75)', boxShadow: '0 0 20px rgba(124, 58, 237, 0.15)' }}
+                    className="rounded-2xl border border-[#7C3AED]/30 p-8 relative overflow-hidden backdrop-blur-xl">
+
+                    {/* Soft gradient border glow */}
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#7C3AED] to-[#EC4899]"></div>
+
+                    <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                        <Activity className="text-[#EC4899]" size={24} />
+                        Global Breach Intelligence
+                    </h2>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {/* Stat 1 */}
+                        <div className="glass-card p-6 flex flex-col justify-between border border-white/5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="p-2 rounded-lg bg-[#7C3AED]/20">
+                                    <Database size={20} className="text-[#7C3AED]" />
+                                </div>
+                                <h3 className="text-sm font-semibold text-[#94A3B8] uppercase tracking-wider">Tracked Breaches</h3>
+                            </div>
+                            <p className="text-3xl font-black text-white mb-2 tracking-tight">
+                                <Counter end={12450} suffix="+" />
+                            </p>
+                            <p className="text-xs text-[#94A3B8] leading-relaxed">
+                                Number of publicly documented global data breaches monitored by the SafeNet intelligence engine.
+                            </p>
+                        </div>
+
+                        {/* Stat 2 */}
+                        <div className="glass-card p-6 flex flex-col justify-between border border-white/5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="p-2 rounded-lg bg-[#EC4899]/20">
+                                    <Users size={20} className="text-[#EC4899]" />
+                                </div>
+                                <h3 className="text-sm font-semibold text-[#94A3B8] uppercase tracking-wider">Exposed Accounts</h3>
+                            </div>
+                            <p className="text-3xl font-black text-white mb-2 tracking-tight">
+                                <Counter end={15.8} decimals={1} suffix=" Billion" />
+                            </p>
+                            <p className="text-xs text-[#94A3B8] leading-relaxed">
+                                Total number of leaked accounts discovered across breach datasets.
+                            </p>
+                        </div>
+
+                        {/* Stat 3 */}
+                        <div className="glass-card p-6 flex flex-col justify-between border border-white/5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="p-2 rounded-lg bg-blue-500/20">
+                                    <Shield size={20} className="text-blue-400" />
+                                </div>
+                                <h3 className="text-sm font-semibold text-[#94A3B8] uppercase tracking-wider">Last Threat Database Update</h3>
+                            </div>
+                            <p className="text-2xl font-black text-white mb-2 tracking-tight">
+                                January 2026
+                            </p>
+                            <p className="text-xs text-[#94A3B8] leading-relaxed">
+                                Latest update from the SafeNet threat intelligence database.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="mt-8 text-center border-t border-white/5 pt-4">
+                        <p className="text-[11px] font-bold text-[#94A3B8] uppercase tracking-[0.2em]">
+                            Powered by SafeNet Global Threat Intelligence Engine
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { KeyRound, ShieldAlert, CheckCircle2, EyeOff } from 'lucide-react';
+import { analyzePasswordBreach } from '../services/mlEngine';
 
 const PasswordBreachDetector = () => {
     const [password, setPassword] = useState('');
@@ -14,34 +15,17 @@ const PasswordBreachDetector = () => {
         setIsChecking(true);
         setResults(null);
 
-        // Mock database check logic
+        // ML Engine simulation
         setTimeout(() => {
-            const lowerPw = password.toLowerCase();
-            let probability = 'Low';
-            let match = '';
-            let advice = '';
+            const mlResult = analyzePasswordBreach(password);
 
-            if (lowerPw === 'password' || lowerPw === '123456' || lowerPw === 'qwerty') {
-                probability = 'Critical';
-                match = 'Extremely common password found in top 100 worst passwords lists.';
-                advice = 'Change this password immediately across all your accounts. It provides practically zero security.';
-            } else if (lowerPw.includes('admin') || lowerPw.includes('root') || lowerPw.includes('login')) {
-                probability = 'High';
-                match = 'Contains default or highly guessable administrative keywords.';
-                advice = 'Avoid using predictable administrative terms in passwords. Use passphrases instead.';
-            } else if (password.length < 8) {
-                probability = 'Moderate';
-                match = 'Short password length increases vulnerability to dictionary and brute-force attacks, commonly found in breach datasets.';
-                advice = 'Extend password length to at least 12-16 characters. Consider using a password manager.';
-            } else {
-                probability = 'Low';
-                match = 'No direct matches found in common breached password patterns.';
-                advice = 'This password pattern appears unique. Ensure you do not reuse it across multiple services.';
-            }
-
-            setResults({ probability, match, advice });
+            setResults({
+                probability: mlResult.threatLevel,
+                match: mlResult.detectedIndicators.join(' '),
+                advice: mlResult.recommendations.join(' ')
+            });
             setIsChecking(false);
-        }, 1500);
+        }, 800);
     };
 
     return (
@@ -101,17 +85,17 @@ const PasswordBreachDetector = () => {
             {results && (
                 <div className="glass-card p-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className={`p-6 rounded-lg border mb-6 flex items-center justify-between gap-6 ${results.probability === 'Critical' || results.probability === 'High'
-                            ? 'bg-[#EF4444]/10 border-red-500/30 text-red-400'
-                            : results.probability === 'Moderate'
-                                ? 'bg-[#F59E0B]/10 border-amber-500/30 text-amber-400'
-                                : 'bg-[#22C55E]/10 border-green-500/30 text-green-400'
+                        ? 'bg-[#EF4444]/10 border-red-500/30 text-red-400'
+                        : results.probability === 'Warning' || results.probability === 'Moderate'
+                            ? 'bg-[#F59E0B]/10 border-amber-500/30 text-amber-400'
+                            : 'bg-[#22C55E]/10 border-green-500/30 text-green-400'
                         }`}>
                         <div>
                             <h3 className="text-sm font-semibold uppercase tracking-wider mb-1 opacity-80">Breach Probability</h3>
                             <span className="text-3xl font-bold">{results.probability}</span>
                         </div>
                         <div>
-                            {results.probability === 'Low' ? <CheckCircle2 size={40} /> : <ShieldAlert size={40} />}
+                            {results.probability === 'Safe' || results.probability === 'Low' ? <CheckCircle2 size={40} /> : <ShieldAlert size={40} />}
                         </div>
                     </div>
 

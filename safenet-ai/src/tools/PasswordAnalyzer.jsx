@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -14,6 +15,7 @@ import {
     EyeOff,
     Key
 } from 'lucide-react';
+import { analyzePassword } from '../services/mlEngine';
 
 const PasswordAnalyzer = () => {
     const [password, setPassword] = useState('');
@@ -23,6 +25,33 @@ const PasswordAnalyzer = () => {
     const [crackTime, setCrackTime] = useState('N/A');
     const [suggestions, setSuggestions] = useState([]);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+    function handleAnalyzePassword(pwd) {
+        const mlResult = analyzePassword(pwd);
+
+        // Strength is 100 - riskScore in mlEngine output
+        setStrength(100 - mlResult.riskScore);
+
+        // mlResult returns _entropy as string fixed to 1 decimal, we can parse it or use directly
+        const ent = parseFloat(mlResult._entropy || 0);
+        setEntropy(ent.toFixed(2));
+
+        // Crack Time Estimation based on entropy from mlEngine
+        const guessesPerSec = 1e9; // 1 Billion guesses/sec
+        const seconds = Math.pow(2, ent) / guessesPerSec;
+
+        if (seconds < 1) setCrackTime('Instant');
+        else if (seconds < 60) setCrackTime(`${Math.round(seconds)} seconds`);
+        else if (seconds < 3600) setCrackTime(`${Math.round(seconds / 60)} minutes`);
+        else if (seconds < 86400) setCrackTime(`${Math.round(seconds / 3600)} hours`);
+        else if (seconds < 31536000) setCrackTime(`${Math.round(seconds / 86400)} days`);
+        else if (seconds < 3153600000) setCrackTime(`${Math.round(seconds / 31536000)} years`);
+        else setCrackTime(`100+ years`);
+
+        // Suggestions combined
+        const suggs = [...(mlResult.recommendations || []), ...(mlResult.detectedIndicators || [])];
+        setSuggestions(suggs.slice(0, 3)); // Keep top 3 for UI
+    };
 
     useEffect(() => {
         if (!password) {
@@ -35,56 +64,12 @@ const PasswordAnalyzer = () => {
 
         setIsAnalyzing(true);
         const timer = setTimeout(() => {
-            analyzePassword(password);
+            handleAnalyzePassword(password);
             setIsAnalyzing(false);
         }, 300);
 
         return () => clearTimeout(timer);
     }, [password]);
-
-    const analyzePassword = (pwd) => {
-        let score = 0;
-
-        // Basic Length
-        if (pwd.length >= 8) score += 20;
-        if (pwd.length >= 12) score += 20;
-
-        // Complexity
-        if (/[A-Z]/.test(pwd)) score += 15;
-        if (/[0-9]/.test(pwd)) score += 15;
-        if (/[^A-Za-z0-9]/.test(pwd)) score += 30;
-
-        setStrength(Math.min(score, 100));
-
-        // Entropy Calculation
-        const charsetSize =
-            (/[a-z]/.test(pwd) ? 26 : 0) +
-            (/[A-Z]/.test(pwd) ? 26 : 0) +
-            (/[0-9]/.test(pwd) ? 10 : 0) +
-            (/[^A-Za-z0-9]/.test(pwd) ? 32 : 0);
-
-        const ent = Math.log2(Math.pow(charsetSize || 1, pwd.length));
-        setEntropy(ent.toFixed(2));
-
-        // Crack Time Estimation
-        const guessesPerSec = 1e9; // 1 Billion guesses/sec
-        const seconds = Math.pow(2, ent) / guessesPerSec;
-
-        if (seconds < 1) setCrackTime('Instant');
-        else if (seconds < 60) setCrackTime(`${Math.round(seconds)} seconds`);
-        else if (seconds < 3600) setCrackTime(`${Math.round(seconds / 60)} minutes`);
-        else if (seconds < 86400) setCrackTime(`${Math.round(seconds / 3600)} hours`);
-        else if (seconds < 31536000) setCrackTime(`${Math.round(seconds / 86400)} days`);
-        else if (seconds < 3153600000) setCrackTime(`${Math.round(seconds / 31536000)} years`);
-        else setCrackTime(`100+ years`);
-
-        // Suggestions
-        let suggs = [];
-        if (pwd.length < 12) suggs.push("Increase length to at least 12 characters to improve resistance against brute-force attacks.");
-        if (!/[A-Z]/.test(pwd)) suggs.push("Include uppercase letters to expand the character set.");
-        if (!/[^A-Za-z0-9]/.test(pwd)) suggs.push("Add special characters (e.g. !@#$%) to significantly increase entropy.");
-        setSuggestions(suggs);
-    };
 
     const getStrengthColor = () => {
         if (strength < 40) return 'text-[#EF4444] bg-[#EF4444]/10 border-red-500/20';

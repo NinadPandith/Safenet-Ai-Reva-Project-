@@ -1,50 +1,38 @@
 import React, { useState } from 'react';
 import { DownloadCloud, ShieldAlert, CheckCircle, FileWarning, Search } from 'lucide-react';
+import { analyzeDownload } from '../services/mlEngine';
 
 const SafeDownload = () => {
     const [url, setUrl] = useState('');
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [results, setResults] = useState(null);
 
-    const analyzeDownload = (e) => {
+    const handleAnalyzeDownload = (e) => {
         e.preventDefault();
         if (!url) return;
 
         setIsAnalyzing(true);
         setResults(null);
 
-        // Mock analysis logic
+        // ML Engine heuristics scan
         setTimeout(() => {
-            const lowerUrl = url.toLowerCase();
-            let riskLevel = 'Low';
-            const warnings = [];
+            const mlResult = analyzeDownload(url);
 
-            if (lowerUrl.includes('.exe') || lowerUrl.includes('.msi') || lowerUrl.includes('.bat')) {
-                riskLevel = 'High';
-                warnings.push('Executable file detected. High risk of system modification if malicious.');
-            } else if (lowerUrl.includes('.zip') || lowerUrl.includes('.rar')) {
-                riskLevel = 'Moderate';
-                warnings.push('Archive file detected. Contents cannot be verified until extracted.');
-            }
+            const isHttps = url.toLowerCase().startsWith('https://');
+            const connectionSecurity = isHttps ? 'HTTPS Secure' : 'HTTP Not Secure';
 
-            if (!lowerUrl.startsWith('https://')) {
-                if (riskLevel === 'Low') riskLevel = 'Moderate';
-                else if (riskLevel === 'Moderate') riskLevel = 'High';
-                warnings.push('Insecure connection (HTTP). The download could be intercepted or modified in transit.');
-            }
-
-            if (lowerUrl.includes('torrent') || lowerUrl.includes('crack') || lowerUrl.includes('free-download')) {
-                riskLevel = 'Critical';
-                warnings.push('Suspicious domain keywords detected associated with pirated or malicious software delivery.');
-            }
-
-            if (warnings.length === 0) {
-                warnings.push('Standard file type over secure connection. Ensure you trust the source domain.');
-            }
-
-            setResults({ riskLevel, warnings, source: new URL(url.startsWith('http') ? url : `https://${url}`).hostname });
+            setResults({
+                source: new URL(url.toLowerCase().startsWith('http') ? url : `https://${url}`).hostname,
+                fileType: "File Type Detected",
+                connectionSecurity,
+                domainReputation: mlResult.riskScore < 40 ? 'Trusted Vendor' : 'Unknown Source',
+                riskLevel: mlResult.threatLevel === 'Safe' ? 'SAFE' : mlResult.threatLevel === 'Critical' ? 'CRITICAL' : mlResult.threatLevel === 'Warning' ? 'MEDIUM' : 'LOW',
+                message: mlResult.recommendations[0],
+                indicators: mlResult.detectedIndicators,
+                confidence: mlResult.confidence
+            });
             setIsAnalyzing(false);
-        }, 1500);
+        }, 800);
     };
 
     return (
@@ -62,7 +50,7 @@ const SafeDownload = () => {
             {/* Input Section */}
             <div className="glass-card p-6 flex flex-col gap-4 items-center justify-center">
 
-                <form onSubmit={analyzeDownload} className="flex gap-4 w-full">
+                <form onSubmit={handleAnalyzeDownload} className="flex gap-4 w-full">
                     <div className="relative flex-1">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" size={20} />
                         <input
@@ -94,34 +82,72 @@ const SafeDownload = () => {
             {results && (
                 <div className="glass-card p-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className="flex flex-col md:flex-row gap-6 mb-6">
-                        <div className={`p-6 rounded-lg border flex flex-col items-center justify-center text-center shrink-0 w-full md:w-64 ${results.riskLevel === 'Critical' || results.riskLevel === 'High'
-                                ? 'bg-[#EF4444]/10 border-red-500/30 text-red-400'
-                                : results.riskLevel === 'Moderate'
-                                    ? 'bg-[#F59E0B]/10 border-amber-500/30 text-amber-400'
-                                    : 'bg-[#22C55E]/10 border-green-500/30 text-green-400'
+                        <div className={`p-6 rounded-lg border flex flex-col items-center justify-center text-center shrink-0 w-full md:w-64 ${results.riskLevel === 'CRITICAL' || results.riskLevel === 'HIGH'
+                            ? 'bg-[#EF4444]/10 border-red-500/30 text-red-400'
+                            : results.riskLevel === 'MEDIUM'
+                                ? 'bg-[#F59E0B]/10 border-amber-500/30 text-amber-400'
+                                : 'bg-[#22C55E]/10 border-green-500/30 text-green-400'
                             }`}>
                             <div className="mb-2">
-                                {results.riskLevel === 'Low' ? <CheckCircle size={40} /> : <ShieldAlert size={40} />}
+                                {results.riskLevel === 'LOW' || results.riskLevel === 'SAFE' ? <CheckCircle size={40} /> : <ShieldAlert size={40} />}
                             </div>
-                            <h3 className="text-sm font-semibold uppercase tracking-wider mb-1 opacity-80">Download Risk</h3>
+                            <h3 className="text-sm font-semibold uppercase tracking-wider mb-1 opacity-80">Final Risk Level</h3>
                             <p className="text-3xl font-bold">{results.riskLevel}</p>
                         </div>
 
                         <div className="bg-transparent rounded-lg p-5 border border-[#334155] flex-1 flex flex-col justify-center">
-                            <h4 className="text-sm font-semibold text-white/70 uppercase tracking-wider mb-2">Source Domain</h4>
-                            <p className="text-xl font-bold text-white font-mono mb-4">{results.source}</p>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <h4 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-1">Source Domain</h4>
+                                    <p className="text-sm font-bold text-white font-mono">{results.source}</p>
+                                </div>
+                                <div>
+                                    <h4 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-1">File Type</h4>
+                                    <p className="text-sm font-bold text-white">{results.fileType}</p>
+                                </div>
+                                <div>
+                                    <h4 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-1">Connection Security</h4>
+                                    <p className={`text-sm font-bold ${results.connectionSecurity.includes('Not Secure') ? 'text-red-400' : 'text-green-400'}`}>{results.connectionSecurity}</p>
+                                </div>
+                                <div>
+                                    <h4 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-1">Domain Reputation</h4>
+                                    <p className={`text-sm font-bold ${results.domainReputation === 'Trusted Vendor' ? 'text-green-400' : 'text-[#F59E0B]'}`}>{results.domainReputation}</p>
+                                </div>
+                            </div>
 
-                            <h4 className="font-semibold text-white mb-2 flex items-center gap-2">
-                                <FileWarning size={16} className="text-[#2563EB]" /> Security Warnings
+                            <div className="mt-4 pt-4 border-t border-[#334155]">
+                                <h4 className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-1">Recommendation</h4>
+                                <p className="text-sm text-white">{results.message}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Detected Indicators */}
+                    <div className="bg-[#1F2937] border border-[#374151] rounded-xl p-6 shadow-sm overflow-hidden mt-6">
+                        <div className="flex items-center gap-3 mb-4">
+                            <ShieldAlert size={18} className="text-[#3B82F6]" />
+                            <h3 className="text-md font-bold text-[#E5E7EB]">Detected Indicators</h3>
+                        </div>
+                        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {results.indicators.map((indicator, idx) => (
+                                <li key={idx} className="flex items-center gap-2 bg-[#374151] border border-[#4B5563] rounded-[6px] px-[12px] py-[8px]">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[#3B82F6]"></span>
+                                    <span className="text-[13px] text-[#E5E7EB] font-medium">{indicator}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Warning Messages */}
+                    <div className={`mt-6 p-4 rounded-lg flex items-center gap-3 border ${results.domainReputation === 'Trusted Vendor' ? 'bg-green-500/10 border-green-500/30 text-green-400' : 'bg-[#EF4444]/10 border-red-500/30 text-[#EF4444]'}`}>
+                        {results.domainReputation === 'Trusted Vendor' ? <CheckCircle size={20} /> : <FileWarning size={20} />}
+                        <div>
+                            <h4 className="font-bold text-sm">
+                                {results.domainReputation === 'Trusted Vendor' ? 'Safe Download Detected' : 'Potentially Dangerous Download'}
                             </h4>
-                            <ul className="space-y-2">
-                                {results.warnings.map((warning, idx) => (
-                                    <li key={idx} className="flex items-start gap-2 text-sm text-white">
-                                        <span className="mt-1 w-1.5 h-1.5 rounded-full bg-slate-500 flex-shrink-0" />
-                                        <span>{warning}</span>
-                                    </li>
-                                ))}
-                            </ul>
+                            <p className="text-xs opacity-90 mt-0.5">
+                                {results.domainReputation === 'Trusted Vendor' ? 'This installer originates from a verified vendor.' : 'This file originates from an untrusted domain.'}
+                            </p>
                         </div>
                     </div>
                 </div>

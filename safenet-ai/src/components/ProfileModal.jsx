@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, X, Shield, Mail, Calendar, Edit3 } from 'lucide-react';
@@ -53,10 +54,10 @@ const ProfileModal = ({ isOpen, onClose }) => {
 
                             {/* User Info */}
                             <div className="text-center mb-6">
-                                <h2 className="text-2xl font-bold text-white mb-1">Admin User</h2>
+                                <h2 className="text-2xl font-bold text-white mb-1">SafeNet Demo User</h2>
                                 <div className="flex items-center justify-center gap-2 text-blue-400 font-medium text-sm mb-4">
                                     <Shield size={14} />
-                                    <span>Workspace Owner</span>
+                                    <span>Security Analyst</span>
                                 </div>
                             </div>
 
@@ -64,12 +65,12 @@ const ProfileModal = ({ isOpen, onClose }) => {
                             <div className="space-y-3 mb-6 bg-[#1F2937] p-4 rounded-xl border border-[#374151]">
                                 <div className="flex items-center gap-3 text-[#E5E7EB] text-sm">
                                     <Mail size={16} className="text-[#9CA3AF]" />
-                                    <span>admin@safenet.ai</span>
+                                    <span>SafeNet-AI Demo Environment</span>
                                 </div>
                                 <div className="h-px bg-[#374151] w-full"></div>
                                 <div className="flex items-center gap-3 text-[#E5E7EB] text-sm">
                                     <Calendar size={16} className="text-[#9CA3AF]" />
-                                    <span>Last Login: Today, 09:41 AM</span>
+                                    <span>Last Login: Demo Mode</span>
                                 </div>
                             </div>
 

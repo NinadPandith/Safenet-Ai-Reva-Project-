@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Globe, AlertTriangle, ShieldCheck, Search, Info } from 'lucide-react';
+import { analyzeImpersonation } from '../services/mlEngine';
 
 const DomainImpersonation = () => {
     const [domain, setDomain] = useState('');
@@ -13,34 +14,20 @@ const DomainImpersonation = () => {
         setIsAnalyzing(true);
         setResults(null);
 
-        // Mock analysis logic
+        // ML Engine analysis
         setTimeout(() => {
-            const lowerDomain = domain.toLowerCase();
-            let detectedBrand = 'Unknown';
-            let riskLevel = 'Low';
-            let score = 12;
-            let recommendation = 'No obvious impersonation attempts detected.';
+            const mlResult = analyzeImpersonation(domain);
 
-            if (lowerDomain.includes('amazon') || lowerDomain.includes('amz')) {
-                detectedBrand = 'Amazon';
-                riskLevel = 'High';
-                score = 82;
-                recommendation = 'Possible phishing domain impersonating Amazon. Do not enter credentials.';
-            } else if (lowerDomain.includes('paypal') || lowerDomain.includes('paypa1')) {
-                detectedBrand = 'PayPal';
-                riskLevel = 'Critical';
-                score = 95;
-                recommendation = 'Highly suspicious domain detected. Typosquatting identified.';
-            } else if (lowerDomain.includes('apple') || lowerDomain.includes('appl')) {
-                detectedBrand = 'Apple';
-                riskLevel = 'Moderate';
-                score = 55;
-                recommendation = 'Domain uses similar keywords to Apple. Proceed with caution.';
-            }
-
-            setResults({ detectedBrand, riskLevel, score, recommendation });
+            setResults({
+                detectedBrand: mlResult.confidence === 100 ? "Authentic Brand" : (mlResult.riskScore > 50 ? "Impersonated Target" : "Unknown Domain"),
+                riskLevel: mlResult.threatLevel,
+                score: mlResult.riskScore,
+                recommendation: mlResult.recommendations[0] || "Proceed with caution.",
+                indicators: mlResult.detectedIndicators,
+                confidence: mlResult.confidence
+            });
             setIsAnalyzing(false);
-        }, 1500);
+        }, 800);
     };
 
     return (
@@ -108,26 +95,41 @@ const DomainImpersonation = () => {
                         <div className="bg-transparent rounded-lg p-4 border border-[#334155] flex flex-col items-center justify-center text-center">
                             <span className="text-white/70 text-sm mb-1">Risk Level</span>
                             <div className="flex items-center gap-2">
-                                {results.riskLevel === 'Low' ? <ShieldCheck className="text-[#22C55E]" size={20} /> : <AlertTriangle className={results.riskLevel === 'Critical' || results.riskLevel === 'High' ? 'text-[#EF4444]' : 'text-[#F59E0B]'} size={20} />}
-                                <span className={`text-lg font-bold ${results.riskLevel === 'Critical' || results.riskLevel === 'High' ? 'text-[#EF4444]' : results.riskLevel === 'Moderate' ? 'text-[#F59E0B]' : 'text-[#22C55E]'}`}>
+                                {results.riskLevel === 'Safe' ? <ShieldCheck className="text-[#22C55E]" size={20} /> : <AlertTriangle className={results.riskLevel === 'Critical' || results.riskLevel === 'High' ? 'text-[#EF4444]' : 'text-[#F59E0B]'} size={20} />}
+                                <span className={`text-lg font-bold ${results.riskLevel === 'Critical' ? 'text-[#EF4444]' : results.riskLevel === 'Warning' ? 'text-[#F59E0B]' : 'text-[#22C55E]'}`}>
                                     {results.riskLevel}
                                 </span>
                             </div>
                         </div>
                     </div>
 
-                    <div className={`p-4 rounded-lg border flex items-start gap-4 ${results.riskLevel === 'Critical' || results.riskLevel === 'High'
-                            ? 'bg-[#EF4444]/10 border-red-500/30 text-red-400'
-                            : results.riskLevel === 'Low'
-                                ? 'bg-[#22C55E]/10 border-green-500/30 text-green-400'
-                                : 'bg-[#F59E0B]/10 border-amber-500/30 text-amber-400'
+                    <div className={`p-4 rounded-lg border flex items-start flex-col sm:flex-row gap-4 mb-4 ${results.riskLevel === 'Critical'
+                        ? 'bg-[#EF4444]/10 border-red-500/30 text-red-400'
+                        : results.riskLevel === 'Safe'
+                            ? 'bg-[#22C55E]/10 border-green-500/30 text-green-400'
+                            : 'bg-[#F59E0B]/10 border-amber-500/30 text-amber-400'
                         }`}>
                         <Info className="flex-shrink-0 mt-0.5" size={20} />
                         <div>
                             <h4 className="font-semibold mb-1">Security Recommendation</h4>
                             <p className="text-sm opacity-90">{results.recommendation}</p>
                         </div>
+
                     </div>
+
+                    {results.indicators && results.indicators.length > 0 && (
+                        <div className="bg-[#1E293B] border border-[#334155] rounded-lg p-4 mt-4">
+                            <h4 className="font-semibold text-white mb-3 text-sm flex items-center gap-2">Detected Indicators</h4>
+                            <div className="flex flex-col gap-2">
+                                {results.indicators.map((ind, i) => (
+                                    <div key={i} className="flex items-center gap-2 text-xs text-white/80 bg-slate-800/50 p-2 rounded">
+                                        <AlertTriangle size={14} className={results.riskLevel === 'Critical' ? "text-[#EF4444]" : "text-[#F59E0B]"} />
+                                        {ind}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

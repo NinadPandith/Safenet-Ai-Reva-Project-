@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
-import { Shield, Bell, User, Search, Menu, Settings, LogOut, Key, ShieldCheck } from 'lucide-react';
+import { Shield, Bell, User, Search, Menu, Settings, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const Navbar = ({ onMenuClick, onOpenProfile, onOpenSettings, onOpenSecurity, onOpenAPIKeys, onOpenSignOut }) => {
+const Navbar = ({ onMenuClick, onOpenProfile, onOpenSettings }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     return (
         <nav className="fixed top-0 left-0 right-0 h-16 glass-sidebar bg-transparent z-50 flex items-center justify-between px-6 border-b border-white/10 transition-all">
@@ -51,8 +52,8 @@ const Navbar = ({ onMenuClick, onOpenProfile, onOpenSettings, onOpenSecurity, on
                             <User size={16} className="text-white/70" />
                         </div>
                         <div className="hidden xl:flex flex-col">
-                            <span className="text-sm font-medium text-white leading-none mb-1">Admin User</span>
-                            <span className="text-[10px] text-white/50 uppercase tracking-wider font-semibold leading-none">Workspace Owner</span>
+                            <span className="text-sm font-medium text-white leading-none mb-1">SafeNet Demo User</span>
+                            <span className="text-[10px] text-white/50 uppercase tracking-wider font-semibold leading-none">Security Analyst</span>
                         </div>
                     </div>
 
@@ -106,42 +107,16 @@ const Navbar = ({ onMenuClick, onOpenProfile, onOpenSettings, onOpenSecurity, on
                                             }}
                                         >
                                             <Settings size={16} />
-                                            Account Settings
+                                            Settings
                                         </button>
                                         <button
                                             className="w-full flex items-center gap-3 px-3.5 py-2.5 text-sm font-medium text-[#E5E7EB] hover:bg-[#374151] rounded-lg transition-colors"
                                             onClick={() => {
                                                 setIsDropdownOpen(false);
-                                                onOpenSecurity();
                                             }}
                                         >
-                                            <ShieldCheck size={16} />
-                                            Security Preferences
-                                        </button>
-                                        <button
-                                            className="w-full flex items-center gap-3 px-3.5 py-2.5 text-sm font-medium text-[#E5E7EB] hover:bg-[#374151] rounded-lg transition-colors"
-                                            onClick={() => {
-                                                setIsDropdownOpen(false);
-                                                onOpenAPIKeys();
-                                            }}
-                                        >
-                                            <Key size={16} />
-                                            API Keys
-                                        </button>
-                                    </div>
-
-                                    <div className="h-px bg-[#374151] w-full my-1"></div>
-
-                                    <div className="px-2 pt-1 pb-1">
-                                        <button
-                                            className="w-full flex items-center gap-3 px-3.5 py-2.5 text-sm font-bold text-[#EF4444] hover:bg-[#EF4444]/15 rounded-lg transition-colors"
-                                            onClick={() => {
-                                                setIsDropdownOpen(false);
-                                                onOpenSignOut();
-                                            }}
-                                        >
-                                            <LogOut size={16} />
-                                            Sign Out
+                                            <Info size={16} />
+                                            About SafeNet-AI
                                         </button>
                                     </div>
                                 </motion.div>
